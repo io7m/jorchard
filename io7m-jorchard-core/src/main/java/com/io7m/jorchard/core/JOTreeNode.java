@@ -125,6 +125,12 @@ public final class JOTreeNode<A> implements JOTreeNodeType<A>
   }
 
   @Override
+  public Optional<JOTreeNodeType<A>> parent()
+  {
+    return Optional.ofNullable(this.parent);
+  }
+
+  @Override
   public void detach()
   {
     if (!this.recursing) {

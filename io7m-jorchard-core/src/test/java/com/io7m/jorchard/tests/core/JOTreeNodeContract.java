@@ -135,6 +135,11 @@ public abstract class JOTreeNodeContract
     Assert.assertFalse(n2.parentReadable().isPresent());
     Assert.assertFalse(n3.parentReadable().isPresent());
 
+    Assert.assertFalse(n0.parent().isPresent());
+    Assert.assertFalse(n1.parent().isPresent());
+    Assert.assertFalse(n2.parent().isPresent());
+    Assert.assertFalse(n3.parent().isPresent());
+
     n0.childAdd(n1);
     n0.childAdd(n2);
     n0.childAdd(n3);
@@ -142,6 +147,10 @@ public abstract class JOTreeNodeContract
     Assert.assertEquals(Optional.of(n0), n1.parentReadable());
     Assert.assertEquals(Optional.of(n0), n2.parentReadable());
     Assert.assertEquals(Optional.of(n0), n3.parentReadable());
+
+    Assert.assertEquals(Optional.of(n0), n1.parent());
+    Assert.assertEquals(Optional.of(n0), n2.parent());
+    Assert.assertEquals(Optional.of(n0), n3.parent());
 
     final Collection<JOTreeNodeType<Integer>> n0_children = n0.children();
     final Collection<JOTreeNodeReadableType<Integer>> n0_children_ro = n0.childrenReadable();
@@ -211,6 +220,11 @@ public abstract class JOTreeNodeContract
     Assert.assertFalse(n2.parentReadable().isPresent());
     Assert.assertFalse(n3.parentReadable().isPresent());
 
+    Assert.assertFalse(n0.parent().isPresent());
+    Assert.assertFalse(n1.parent().isPresent());
+    Assert.assertFalse(n2.parent().isPresent());
+    Assert.assertFalse(n3.parent().isPresent());
+
     n1.setParent(n0);
     n2.setParent(n0);
     n3.setParent(n0);
@@ -218,6 +232,10 @@ public abstract class JOTreeNodeContract
     Assert.assertEquals(Optional.of(n0), n1.parentReadable());
     Assert.assertEquals(Optional.of(n0), n2.parentReadable());
     Assert.assertEquals(Optional.of(n0), n3.parentReadable());
+
+    Assert.assertEquals(Optional.of(n0), n1.parent());
+    Assert.assertEquals(Optional.of(n0), n2.parent());
+    Assert.assertEquals(Optional.of(n0), n3.parent());
 
     final Collection<JOTreeNodeType<Integer>> n0_children = n0.children();
     final Collection<JOTreeNodeReadableType<Integer>> n0_children_ro = n0.childrenReadable();

@@ -17,6 +17,7 @@
 package com.io7m.jorchard.core;
 
 import java.util.Collection;
+import java.util.Optional;
 
 /**
  * The type of tree nodes.
@@ -71,4 +72,10 @@ public interface JOTreeNodeType<A> extends JOTreeNodeReadableType<A>
 
   void setParent(final JOTreeNodeType<A> new_parent)
     throws JOTreeExceptionCycle;
+
+  /**
+   * @return A reference to the parent node, if any
+   */
+
+  Optional<JOTreeNodeType<A>> parent();
 }
