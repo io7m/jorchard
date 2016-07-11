@@ -7,7 +7,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.io7m.jorchard</groupId>
   <artifactId>io7m-jorchard</artifactId>
-  <version>0.1.0</version>
+  <version>0.2.0</version>
 
   <packaging>pom</packaging>
   <name>io7m-jorchard</name>
