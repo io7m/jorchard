@@ -28,6 +28,12 @@ import java.util.Optional;
 public interface JOTreeNodeReadableType<A>
 {
   /**
+   * @return {@code true} iff this node may be detached from its parent
+   */
+
+  boolean isDetachAllowed();
+
+  /**
    * @return The value contained within the node
    */
 

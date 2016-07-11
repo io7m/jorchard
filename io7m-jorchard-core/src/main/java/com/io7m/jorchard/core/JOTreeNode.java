@@ -27,6 +27,7 @@ import java.util.LinkedList;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Queue;
+import java.util.function.BooleanSupplier;
 
 /**
  * The default implementation of the {@link JOTreeNodeType} type.
@@ -40,11 +41,13 @@ public final class JOTreeNode<A> implements JOTreeNodeType<A>
   private final Collection<JOTreeNodeType<A>> children;
   private final A value;
   private final Collection<JOTreeNodeType<A>> children_view;
+  private final BooleanSupplier detach_check;
   private boolean recursing;
   private @Nullable JOTreeNodeType<A> parent;
 
   private JOTreeNode(
     final Collection<JOTreeNodeType<A>> in_children,
+    final BooleanSupplier in_detach_check,
     final A in_value)
   {
     this.parent = null;
@@ -53,6 +56,7 @@ public final class JOTreeNode<A> implements JOTreeNodeType<A>
     this.children_view = Collections.unmodifiableCollection(this.children);
     this.value = NullCheck.notNull(in_value);
     this.recursing = false;
+    this.detach_check = NullCheck.notNull(in_detach_check);
   }
 
   /**
@@ -67,7 +71,33 @@ public final class JOTreeNode<A> implements JOTreeNodeType<A>
 
   public static <A> JOTreeNodeType<A> create(final A in_value)
   {
-    return new JOTreeNode<>(new ArrayList<>(8), in_value);
+    return new JOTreeNode<>(new ArrayList<>(8), () -> true, in_value);
+  }
+
+  /**
+   * Create a new node with the given value. The node has no parent and no
+   * children. The node is equipped with a function that is evaluated each
+   * before the node is detached from any node, with a {@code true} value
+   * indicating that the node is allowed to be detached.
+   *
+   * @param in_value        The value
+   * @param in_detach_check A detach check function
+   * @param <A>             The type of values
+   *
+   * @return A new node
+   */
+
+  public static <A> JOTreeNodeType<A> createWithDetachCheck(
+    final A in_value,
+    final BooleanSupplier in_detach_check)
+  {
+    return new JOTreeNode<>(new ArrayList<>(8), in_detach_check, in_value);
+  }
+
+  @Override
+  public boolean isDetachAllowed()
+  {
+    return this.detach_check.getAsBoolean();
   }
 
   @Override
@@ -112,6 +142,10 @@ public final class JOTreeNode<A> implements JOTreeNodeType<A>
       throw new JOTreeExceptionCycle(sb.toString());
     }
 
+    if (this.parent != null) {
+      this.checkDetach();
+    }
+
     if (!this.recursing) {
       try {
         this.recursing = true;
@@ -146,6 +180,19 @@ public final class JOTreeNode<A> implements JOTreeNodeType<A>
     }
   }
 
+  private void checkDetach()
+  {
+    if (!this.isDetachAllowed()) {
+      final StringBuilder sb =
+        new StringBuilder("This node may not be detached.");
+      sb.append(System.lineSeparator());
+      sb.append("  This: ");
+      sb.append(this);
+      sb.append(System.lineSeparator());
+      throw new JOTreeExceptionDetachDenied(sb.toString());
+    }
+  }
+
   @Override
   public Optional<JOTreeNodeType<A>> parent()
   {
@@ -155,6 +202,10 @@ public final class JOTreeNode<A> implements JOTreeNodeType<A>
   @Override
   public void detach()
   {
+    if (this.parent != null) {
+      this.checkDetach();
+    }
+
     if (!this.recursing) {
       try {
         this.recursing = true;

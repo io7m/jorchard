@@ -72,6 +72,12 @@ public class DelegatingNode<A> implements JOTreeNodeType<A>
   }
 
   @Override
+  public boolean isDetachAllowed()
+  {
+    return this.actual.isDetachAllowed();
+  }
+
+  @Override
   public A value()
   {
     return this.actual.value();

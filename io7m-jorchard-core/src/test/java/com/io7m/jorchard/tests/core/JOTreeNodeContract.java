@@ -17,6 +17,7 @@
 package com.io7m.jorchard.tests.core;
 
 import com.io7m.jorchard.core.JOTreeExceptionCycle;
+import com.io7m.jorchard.core.JOTreeExceptionDetachDenied;
 import com.io7m.jorchard.core.JOTreeNodeForEachFunctionType;
 import com.io7m.jorchard.core.JOTreeNodeReadableType;
 import com.io7m.jorchard.core.JOTreeNodeType;
@@ -30,12 +31,17 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BooleanSupplier;
 
 public abstract class JOTreeNodeContract
 {
   @Rule public final ExpectedException expected = ExpectedException.none();
 
   protected abstract <A> JOTreeNodeType<A> create(final A x);
+
+  protected abstract <A> JOTreeNodeType<A> createWithDetachCheck(
+    final A x,
+    final BooleanSupplier detach_check);
 
   @Test
   public final void testForEachDepthFirst()
@@ -131,6 +137,46 @@ public abstract class JOTreeNodeContract
 
     Assert.assertTrue(n0.isRoot());
     Assert.assertFalse(n0.parent().isPresent());
+  }
+
+  @Test
+  public final void testDeniedDetach()
+  {
+    final JOTreeNodeType<Integer> n1 = this.create(Integer.valueOf(1));
+    final JOTreeNodeType<Integer> n0 =
+      this.createWithDetachCheck(Integer.valueOf(0), () -> false);
+
+    n0.setParent(n1);
+
+    this.expected.expect(JOTreeExceptionDetachDenied.class);
+    n0.detach();
+  }
+
+  @Test
+  public final void testDeniedSetParent()
+  {
+    final JOTreeNodeType<Integer> n2 = this.create(Integer.valueOf(2));
+    final JOTreeNodeType<Integer> n1 = this.create(Integer.valueOf(1));
+    final JOTreeNodeType<Integer> n0 =
+      this.createWithDetachCheck(Integer.valueOf(0), () -> false);
+
+    n0.setParent(n1);
+
+    this.expected.expect(JOTreeExceptionDetachDenied.class);
+    n0.setParent(n2);
+  }
+
+  @Test
+  public final void testDeniedChildRemove()
+  {
+    final JOTreeNodeType<Integer> n1 = this.create(Integer.valueOf(1));
+    final JOTreeNodeType<Integer> n0 =
+      this.createWithDetachCheck(Integer.valueOf(0), () -> false);
+
+    n0.setParent(n1);
+
+    this.expected.expect(JOTreeExceptionDetachDenied.class);
+    n1.childRemove(n0);
   }
 
   @Test
@@ -402,96 +448,6 @@ public abstract class JOTreeNodeContract
     n2.setParent(n0);
   }
 
-  static class JOTreeNodeUnimplemented<A> implements JOTreeNodeType<A>
-  {
-
-    @Override
-    public void detach()
-    {
-      throw new UnimplementedCodeException();
-    }
-
-    @Override
-    public Collection<JOTreeNodeType<A>> children()
-    {
-      throw new UnimplementedCodeException();
-    }
-
-    @Override
-    public void childRemove(final JOTreeNodeType<A> child)
-    {
-      throw new UnimplementedCodeException();
-    }
-
-    @Override
-    public void childAdd(final JOTreeNodeType<A> child)
-      throws JOTreeExceptionCycle
-    {
-      throw new UnimplementedCodeException();
-    }
-
-    @Override
-    public void setParent(final JOTreeNodeType<A> new_parent)
-      throws JOTreeExceptionCycle
-    {
-      throw new UnimplementedCodeException();
-    }
-
-    @Override
-    public Optional<JOTreeNodeType<A>> parent()
-    {
-      throw new UnimplementedCodeException();
-    }
-
-    @Override
-    public A value()
-    {
-      throw new UnimplementedCodeException();
-    }
-
-    @Override
-    public Optional<JOTreeNodeReadableType<A>> parentReadable()
-    {
-      throw new UnimplementedCodeException();
-    }
-
-    @Override
-    public Collection<JOTreeNodeReadableType<A>> childrenReadable()
-    {
-      throw new UnimplementedCodeException();
-    }
-
-    @Override
-    public boolean isDescendantOf(final JOTreeNodeReadableType<A> other)
-    {
-      throw new UnimplementedCodeException();
-    }
-
-    @Override
-    public <T> void forEachDepthFirst(
-      final T context,
-      final JOTreeNodeForEachFunctionType<A, T> f)
-    {
-      throw new UnimplementedCodeException();
-    }
-
-    @Override
-    public <T> void forEachBreadthFirst(
-      final T context,
-      final JOTreeNodeForEachFunctionType<A, T> f)
-    {
-      throw new UnimplementedCodeException();
-    }
-  }
-
-  static final class HostileImplementationException extends RuntimeException
-  {
-    public HostileImplementationException(final String message)
-    {
-      super(message);
-    }
-  }
-
   /**
    * Checks that a parent that raises an exception when a child attempts to
    * setParent it doesn't corrupt the tree.
@@ -561,68 +517,6 @@ public abstract class JOTreeNodeContract
 
     Assert.assertTrue(caught);
     Assert.assertFalse(n1.parent().isPresent());
-  }
-
-  private static final class ChildRemoveTimebomb<A> extends DelegatingNode<A>
-  {
-    ChildRemoveTimebomb(final JOTreeNodeType<A> actual)
-    {
-      super(actual);
-    }
-
-    @Override
-    public void childRemove(final JOTreeNodeType<A> child)
-    {
-      throw new JOTreeNodeContract.HostileImplementationException(
-        "Refusing to remove");
-    }
-  }
-
-  private static final class ChildAddTimebomb<A> extends DelegatingNode<A>
-  {
-    ChildAddTimebomb(final JOTreeNodeType<A> actual)
-    {
-      super(actual);
-    }
-
-    @Override
-    public void childAdd(final JOTreeNodeType<A> child)
-      throws JOTreeExceptionCycle
-    {
-      throw new JOTreeNodeContract.HostileImplementationException(
-        "Refusing to add");
-    }
-  }
-
-  private static final class ChildSetParentTimebomb<A> extends DelegatingNode<A>
-  {
-    ChildSetParentTimebomb(final JOTreeNodeType<A> actual)
-    {
-      super(actual);
-    }
-
-    @Override
-    public void setParent(final JOTreeNodeType<A> new_parent)
-      throws JOTreeExceptionCycle
-    {
-      throw new JOTreeNodeContract.HostileImplementationException(
-        "Refusing to set parent");
-    }
-  }
-
-  private static final class DetachTimebomb<A> extends DelegatingNode<A>
-  {
-    DetachTimebomb(final JOTreeNodeType<A> actual)
-    {
-      super(actual);
-    }
-
-    @Override
-    public void detach()
-    {
-      throw new JOTreeNodeContract.HostileImplementationException(
-        "Refusing to detach");
-    }
   }
 
   /**
@@ -711,5 +605,162 @@ public abstract class JOTreeNodeContract
     Assert.assertTrue(caught);
     Assert.assertEquals(n1, n_timebomb.parent().get());
     Assert.assertTrue(n1.children().contains(n_timebomb));
+  }
+
+  static class JOTreeNodeUnimplemented<A> implements JOTreeNodeType<A>
+  {
+    @Override
+    public boolean isDetachAllowed()
+    {
+      throw new UnimplementedCodeException();
+    }
+
+    @Override
+    public void detach()
+    {
+      throw new UnimplementedCodeException();
+    }
+
+    @Override
+    public Collection<JOTreeNodeType<A>> children()
+    {
+      throw new UnimplementedCodeException();
+    }
+
+    @Override
+    public void childRemove(final JOTreeNodeType<A> child)
+    {
+      throw new UnimplementedCodeException();
+    }
+
+    @Override
+    public void childAdd(final JOTreeNodeType<A> child)
+      throws JOTreeExceptionCycle
+    {
+      throw new UnimplementedCodeException();
+    }
+
+    @Override
+    public void setParent(final JOTreeNodeType<A> new_parent)
+      throws JOTreeExceptionCycle
+    {
+      throw new UnimplementedCodeException();
+    }
+
+    @Override
+    public Optional<JOTreeNodeType<A>> parent()
+    {
+      throw new UnimplementedCodeException();
+    }
+
+    @Override
+    public A value()
+    {
+      throw new UnimplementedCodeException();
+    }
+
+    @Override
+    public Optional<JOTreeNodeReadableType<A>> parentReadable()
+    {
+      throw new UnimplementedCodeException();
+    }
+
+    @Override
+    public Collection<JOTreeNodeReadableType<A>> childrenReadable()
+    {
+      throw new UnimplementedCodeException();
+    }
+
+    @Override
+    public boolean isDescendantOf(final JOTreeNodeReadableType<A> other)
+    {
+      throw new UnimplementedCodeException();
+    }
+
+    @Override
+    public <T> void forEachDepthFirst(
+      final T context,
+      final JOTreeNodeForEachFunctionType<A, T> f)
+    {
+      throw new UnimplementedCodeException();
+    }
+
+    @Override
+    public <T> void forEachBreadthFirst(
+      final T context,
+      final JOTreeNodeForEachFunctionType<A, T> f)
+    {
+      throw new UnimplementedCodeException();
+    }
+  }
+
+  static final class HostileImplementationException extends RuntimeException
+  {
+    public HostileImplementationException(final String message)
+    {
+      super(message);
+    }
+  }
+
+  private static final class ChildRemoveTimebomb<A> extends DelegatingNode<A>
+  {
+    ChildRemoveTimebomb(final JOTreeNodeType<A> actual)
+    {
+      super(actual);
+    }
+
+    @Override
+    public void childRemove(final JOTreeNodeType<A> child)
+    {
+      throw new JOTreeNodeContract.HostileImplementationException(
+        "Refusing to remove");
+    }
+  }
+
+  private static final class ChildAddTimebomb<A> extends DelegatingNode<A>
+  {
+    ChildAddTimebomb(final JOTreeNodeType<A> actual)
+    {
+      super(actual);
+    }
+
+    @Override
+    public void childAdd(final JOTreeNodeType<A> child)
+      throws JOTreeExceptionCycle
+    {
+      throw new JOTreeNodeContract.HostileImplementationException(
+        "Refusing to add");
+    }
+  }
+
+  private static final class ChildSetParentTimebomb<A> extends DelegatingNode<A>
+  {
+    ChildSetParentTimebomb(final JOTreeNodeType<A> actual)
+    {
+      super(actual);
+    }
+
+    @Override
+    public void setParent(final JOTreeNodeType<A> new_parent)
+      throws JOTreeExceptionCycle
+    {
+      throw new JOTreeNodeContract.HostileImplementationException(
+        "Refusing to set parent");
+    }
+  }
+
+  private static final class DetachTimebomb<A> extends DelegatingNode<A>
+  {
+    DetachTimebomb(final JOTreeNodeType<A> actual)
+    {
+      super(actual);
+    }
+
+    @Override
+    public void detach()
+    {
+      throw new JOTreeNodeContract.HostileImplementationException(
+        "Refusing to detach");
+    }
   }
 }
