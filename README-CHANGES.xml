@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<c:changelog xmlns:c="http://schemas.io7m.com/changelog/2.0.0">
+  <c:project>io7m-jorchard</c:project>
+
+  <c:release c:ticket-system="com.github.io7m.jorchard">
+    <c:date>2016-07-07</c:date>
+    <c:version>0.1.0</c:version>
+    <c:item>
+      <c:date>2016-07-07</c:date>
+      <c:type-code-new/>
+      <c:summary>Initial release.</c:summary>
+    </c:item>
+  </c:release>
+
+  <c:release c:ticket-system="com.github.io7m.jorchard">
+    <c:date>2016-07-11</c:date>
+    <c:version>0.2.0</c:version>
+    <c:item>
+      <c:date>2016-07-11</c:date>
+      <c:type-code-fix/>
+      <c:summary>Correct bug with setParent not correctly removing children.</c:summary>
+    </c:item>
+    <c:item>
+      <c:date>2016-07-11</c:date>
+      <c:type-code-fix/>
+      <c:summary>Make API fully exception safe: An exception never leaves the tree in an inconsistent state.</c:summary>
+    </c:item>
+    <c:item>
+      <c:date>2016-07-11</c:date>
+      <c:type-code-new/>
+      <c:summary>Add the ability to prevent the detachment of nodes.</c:summary>
+    </c:item>
+  </c:release>
+
+  <c:ticket-system xml:id="com.github.io7m.jorchard">
+    <c:ticket-url>https://github.com/io7m/jorchard/issues</c:ticket-url>
+  </c:ticket-system>
+
+</c:changelog>
