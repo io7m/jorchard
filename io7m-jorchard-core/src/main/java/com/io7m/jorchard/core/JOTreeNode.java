@@ -95,16 +95,16 @@ public final class JOTreeNode<A> implements JOTreeNodeType<A>
   }
 
   @Override
-  public void setParent(final JOTreeNodeType<A> new_parent)
+  public void setParent(final JOTreeNodeType<A> parent_new)
   {
-    NullCheck.notNull(new_parent);
+    NullCheck.notNull(parent_new);
 
-    if (new_parent.isDescendantOf(this)) {
+    if (parent_new.isDescendantOf(this)) {
       final StringBuilder sb = new StringBuilder(
         "Cannot set a descendant of this node to be the parent of this node.");
       sb.append(System.lineSeparator());
       sb.append("  Descendant: ");
-      sb.append(new_parent);
+      sb.append(parent_new);
       sb.append(System.lineSeparator());
       sb.append("  This: ");
       sb.append(this);
@@ -115,9 +115,31 @@ public final class JOTreeNode<A> implements JOTreeNodeType<A>
     if (!this.recursing) {
       try {
         this.recursing = true;
-        this.parent = new_parent;
-        this.parent.childRemove(this);
-        this.parent.childAdd(this);
+
+        final JOTreeNodeType<A> parent_previous = this.parent;
+
+        /**
+         * Remove this child from the existing parent. If this fails,
+         * nothing needs to be restored.
+         */
+
+        if (parent_previous != null) {
+          parent_previous.childRemove(this);
+        }
+
+        /**
+         * Add this node to the new parent. If this fails, the node is
+         * detached.
+         */
+
+        try {
+          parent_new.childAdd(this);
+          this.parent = parent_new;
+        } catch (RuntimeException | Error e) {
+          this.parent = null;
+          throw e;
+        }
+
       } finally {
         this.recursing = false;
       }

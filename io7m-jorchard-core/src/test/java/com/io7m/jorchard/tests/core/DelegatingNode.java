@@ -1,0 +1,119 @@
+/*
+ * Copyright © 2016 <code@io7m.com> http://io7m.com
+ *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
+ * SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
+ * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
+
+package com.io7m.jorchard.tests.core;
+
+import com.io7m.jorchard.core.JOTreeExceptionCycle;
+import com.io7m.jorchard.core.JOTreeNodeForEachFunctionType;
+import com.io7m.jorchard.core.JOTreeNodeReadableType;
+import com.io7m.jorchard.core.JOTreeNodeType;
+
+import java.util.Collection;
+import java.util.Optional;
+
+public class DelegatingNode<A> implements JOTreeNodeType<A>
+{
+  protected final JOTreeNodeType<A> actual;
+
+  public DelegatingNode(final JOTreeNodeType<A> actual)
+  {
+    this.actual = actual;
+  }
+
+  @Override
+  public void detach()
+  {
+    this.actual.detach();
+  }
+
+  @Override
+  public Collection<JOTreeNodeType<A>> children()
+  {
+    return this.actual.children();
+  }
+
+  @Override
+  public void childRemove(final JOTreeNodeType<A> child)
+  {
+    this.actual.childRemove(child);
+  }
+
+  @Override
+  public void childAdd(final JOTreeNodeType<A> child)
+    throws JOTreeExceptionCycle
+  {
+    this.actual.childAdd(child);
+  }
+
+  @Override
+  public void setParent(final JOTreeNodeType<A> new_parent)
+    throws JOTreeExceptionCycle
+  {
+    this.actual.setParent(new_parent);
+  }
+
+  @Override
+  public Optional<JOTreeNodeType<A>> parent()
+  {
+    return this.actual.parent();
+  }
+
+  @Override
+  public A value()
+  {
+    return this.actual.value();
+  }
+
+  @Override
+  public boolean isRoot()
+  {
+    return this.actual.isRoot();
+  }
+
+  @Override
+  public Optional<JOTreeNodeReadableType<A>> parentReadable()
+  {
+    return this.actual.parentReadable();
+  }
+
+  @Override
+  public Collection<JOTreeNodeReadableType<A>> childrenReadable()
+  {
+    return this.actual.childrenReadable();
+  }
+
+  @Override
+  public boolean isDescendantOf(final JOTreeNodeReadableType<A> other)
+  {
+    return this.actual.isDescendantOf(other);
+  }
+
+  @Override
+  public <T> void forEachDepthFirst(
+    final T context,
+    final JOTreeNodeForEachFunctionType<A, T> f)
+  {
+    this.actual.forEachDepthFirst(context, f);
+  }
+
+  @Override
+  public <T> void forEachBreadthFirst(
+    final T context,
+    final JOTreeNodeForEachFunctionType<A, T> f)
+  {
+    this.actual.forEachBreadthFirst(context, f);
+  }
+}
