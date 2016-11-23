@@ -18,6 +18,7 @@
       <ul>
         <li>ISC license.</li>
         <li>100% automated test coverage.</li>
+        <li><a href="https://www.osgi.org/">OSGi</a>-ready.</li>
       </ul>
     </subsection>
   </body>
