@@ -97,4 +97,40 @@ public interface JOTreeNodeReadableType<A>
   <T> void forEachBreadthFirst(
     final T context,
     final JOTreeNodeForEachFunctionType<A, T> f);
+
+  /**
+   * <p>Visit each node in the tree in depth-first order.</p>
+   *
+   * <p>The function allows for the use of a context value. This is useful for
+   * avoiding the use of capturing lambdas, reducing GC pressure.</p>
+   *
+   * @param context A context value passed to each application of {@code f}
+   * @param f       A function used to receive each node
+   * @param <T>     The type of context values
+   * @param <B>     The type of values in the returned tree
+   *
+   * @return A new structurally equal tree with nodes of type {@code B}
+   */
+
+  <T, B> JOTreeNodeType<B> mapDepthFirst(
+    final T context,
+    final JOTreeNodeMapFunctionType<A, T, B> f);
+
+  /**
+   * <p>Visit each node in the tree in breadth-first order.</p>
+   *
+   * <p>The function allows for the use of a context value. This is useful for
+   * avoiding the use of capturing lambdas, reducing GC pressure.</p>
+   *
+   * @param context A context value passed to each application of {@code f}
+   * @param f       A function used to receive each node
+   * @param <T>     The type of context values
+   * @param <B>     The type of values in the returned tree
+   *
+   * @return A new structurally equal tree with nodes of type {@code B}
+   */
+
+  <T, B> JOTreeNodeType<B> mapBreadthFirst(
+    final T context,
+    final JOTreeNodeMapFunctionType<A, T, B> f);
 }

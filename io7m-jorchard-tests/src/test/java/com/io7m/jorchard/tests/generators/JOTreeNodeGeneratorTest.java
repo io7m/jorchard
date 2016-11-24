@@ -59,7 +59,9 @@ public final class JOTreeNodeGeneratorTest
           JOTreeNodeGeneratorTest.this.dump(any);
 
           final AtomicInteger size = new AtomicInteger(0);
-          any.forEachDepthFirst(size, (input, depth, node) -> size.incrementAndGet());
+          any.forEachDepthFirst(
+            size,
+            (input, depth, node) -> size.incrementAndGet());
 
           LOG.debug("size: {}", Integer.valueOf(size.get()));
 

@@ -16,9 +16,11 @@
 
 package com.io7m.jorchard.tests.core;
 
+import com.io7m.jfunctional.Unit;
 import com.io7m.jorchard.core.JOTreeExceptionCycle;
 import com.io7m.jorchard.core.JOTreeExceptionDetachDenied;
 import com.io7m.jorchard.core.JOTreeNodeForEachFunctionType;
+import com.io7m.jorchard.core.JOTreeNodeMapFunctionType;
 import com.io7m.jorchard.core.JOTreeNodeReadableType;
 import com.io7m.jorchard.core.JOTreeNodeType;
 import com.io7m.junreachable.UnimplementedCodeException;
@@ -26,16 +28,41 @@ import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
 
 public abstract class JOTreeNodeContract
 {
+  private static final Logger LOG;
+
+  static {
+    LOG = LoggerFactory.getLogger(JOTreeNodeContract.class);
+  }
+
   @Rule public final ExpectedException expected = ExpectedException.none();
+
+  private static <T> void dump(
+    final JOTreeNodeReadableType<T> node)
+  {
+    final StringBuilder sb = new StringBuilder(128);
+    LOG.debug("dumping tree {}", node);
+    node.forEachDepthFirst(Unit.unit(), (input, depth, n) -> {
+      sb.setLength(0);
+      for (int index = 0; index < depth; ++index) {
+        sb.append(" ");
+      }
+      sb.append(n.value());
+      LOG.debug("{}", sb.toString());
+    });
+  }
 
   protected abstract <A> JOTreeNodeType<A> create(final A x);
 
@@ -112,6 +139,8 @@ public abstract class JOTreeNodeContract
       Assert.assertTrue(depth >= 0);
       Assert.assertTrue(depth <= 3);
       input.add(node.value());
+
+      LOG.debug("node {} {}", Integer.valueOf(depth), node.value());
     });
 
     Assert.assertEquals(8L, (long) order.size());
@@ -607,6 +636,172 @@ public abstract class JOTreeNodeContract
     Assert.assertTrue(n1.children().contains(n_timebomb));
   }
 
+  @Test
+  public final void testMapBreadthFirst()
+  {
+    final Map<String, JOTreeNodeReadableType<String>> nodes_s = new HashMap<>();
+    final Map<Integer, JOTreeNodeReadableType<Integer>> nodes_i = new HashMap<>();
+
+    final JOTreeNodeType<Integer> n0 = this.create(Integer.valueOf(0));
+    final JOTreeNodeType<Integer> n1 = this.create(Integer.valueOf(1));
+    final JOTreeNodeType<Integer> n2 = this.create(Integer.valueOf(2));
+    final JOTreeNodeType<Integer> n3 = this.create(Integer.valueOf(3));
+    final JOTreeNodeType<Integer> n4 = this.create(Integer.valueOf(4));
+    final JOTreeNodeType<Integer> n5 = this.create(Integer.valueOf(5));
+    final JOTreeNodeType<Integer> n6 = this.create(Integer.valueOf(6));
+    final JOTreeNodeType<Integer> n7 = this.create(Integer.valueOf(7));
+
+    n7.setParent(n5);
+    n6.setParent(n5);
+
+    n4.setParent(n2);
+    n3.setParent(n2);
+
+    n5.setParent(n1);
+    n2.setParent(n1);
+
+    n1.setParent(n0);
+
+    final List<Integer> order = new ArrayList<>(10);
+    final JOTreeNodeType<String> r =
+      n0.mapBreadthFirst(order, (input, depth, node) -> {
+        Assert.assertTrue(depth >= 0);
+        Assert.assertTrue(depth <= 3);
+        input.add(node.value());
+        nodes_i.put(node.value(), node);
+        return node.value().toString();
+      });
+
+    dump(n0);
+    dump(r);
+
+    r.forEachDepthFirst(Unit.unit(), (input, depth, node) -> {
+      Assert.assertFalse(nodes_s.containsKey(node.value()));
+      nodes_s.put(node.value(), node);
+    });
+
+    Assert.assertEquals(8L, (long) nodes_s.size());
+
+    for (final Integer key : nodes_i.keySet()) {
+      Assert.assertTrue(nodes_s.containsKey(key.toString()));
+
+      final JOTreeNodeReadableType<Integer> node_i =
+        nodes_i.get(key);
+      final JOTreeNodeReadableType<String> node_s =
+        nodes_s.get(key.toString());
+      final Collection<JOTreeNodeReadableType<Integer>> children_i =
+        node_i.childrenReadable();
+      final Collection<JOTreeNodeReadableType<String>> children_s =
+        node_s.childrenReadable();
+
+      Assert.assertEquals(
+        (long) children_i.size(),
+        (long) children_s.size());
+
+      for (final JOTreeNodeReadableType<Integer> ci : children_i) {
+        final JOTreeNodeReadableType<String> cs = nodes_s.get(ci.value().toString());
+        if (cs.parentReadable().isPresent()) {
+          final JOTreeNodeReadableType<String> csp = cs.parentReadable().get();
+          final JOTreeNodeReadableType<Integer> cip = ci.parentReadable().get();
+          Assert.assertEquals(csp.value(), cip.value().toString());
+        }
+      }
+    }
+
+    Assert.assertEquals(8L, (long) order.size());
+    Assert.assertEquals(Integer.valueOf(0), order.get(0));
+    Assert.assertEquals(Integer.valueOf(1), order.get(1));
+    Assert.assertEquals(Integer.valueOf(5), order.get(2));
+    Assert.assertEquals(Integer.valueOf(2), order.get(3));
+    Assert.assertEquals(Integer.valueOf(7), order.get(4));
+    Assert.assertEquals(Integer.valueOf(6), order.get(5));
+    Assert.assertEquals(Integer.valueOf(4), order.get(6));
+    Assert.assertEquals(Integer.valueOf(3), order.get(7));
+  }
+
+  @Test
+  public final void testMapDepthFirst()
+  {
+    final Map<String, JOTreeNodeReadableType<String>> nodes_s = new HashMap<>();
+    final Map<Integer, JOTreeNodeReadableType<Integer>> nodes_i = new HashMap<>();
+
+    final JOTreeNodeType<Integer> n0 = this.create(Integer.valueOf(0));
+    final JOTreeNodeType<Integer> n1 = this.create(Integer.valueOf(1));
+    final JOTreeNodeType<Integer> n2 = this.create(Integer.valueOf(2));
+    final JOTreeNodeType<Integer> n3 = this.create(Integer.valueOf(3));
+    final JOTreeNodeType<Integer> n4 = this.create(Integer.valueOf(4));
+    final JOTreeNodeType<Integer> n5 = this.create(Integer.valueOf(5));
+    final JOTreeNodeType<Integer> n6 = this.create(Integer.valueOf(6));
+    final JOTreeNodeType<Integer> n7 = this.create(Integer.valueOf(7));
+
+    n7.setParent(n5);
+    n6.setParent(n5);
+
+    n4.setParent(n2);
+    n3.setParent(n2);
+
+    n5.setParent(n1);
+    n2.setParent(n1);
+
+    n1.setParent(n0);
+
+    final List<Integer> order = new ArrayList<>(10);
+    final JOTreeNodeType<String> r =
+      n0.mapDepthFirst(order, (input, depth, node) -> {
+        Assert.assertTrue(depth >= 0);
+        Assert.assertTrue(depth <= 3);
+        input.add(node.value());
+        nodes_i.put(node.value(), node);
+        return node.value().toString();
+      });
+
+    dump(n0);
+    dump(r);
+
+    r.forEachDepthFirst(Unit.unit(), (input, depth, node) -> {
+      Assert.assertFalse(nodes_s.containsKey(node.value()));
+      nodes_s.put(node.value(), node);
+    });
+
+    Assert.assertEquals(8L, (long) nodes_s.size());
+
+    for (final Integer key : nodes_i.keySet()) {
+      Assert.assertTrue(nodes_s.containsKey(key.toString()));
+
+      final JOTreeNodeReadableType<Integer> node_i =
+        nodes_i.get(key);
+      final JOTreeNodeReadableType<String> node_s =
+        nodes_s.get(key.toString());
+      final Collection<JOTreeNodeReadableType<Integer>> children_i =
+        node_i.childrenReadable();
+      final Collection<JOTreeNodeReadableType<String>> children_s =
+        node_s.childrenReadable();
+
+      Assert.assertEquals(
+        (long) children_i.size(),
+        (long) children_s.size());
+
+      for (final JOTreeNodeReadableType<Integer> ci : children_i) {
+        final JOTreeNodeReadableType<String> cs = nodes_s.get(ci.value().toString());
+        if (cs.parentReadable().isPresent()) {
+          final JOTreeNodeReadableType<String> csp = cs.parentReadable().get();
+          final JOTreeNodeReadableType<Integer> cip = ci.parentReadable().get();
+          Assert.assertEquals(csp.value(), cip.value().toString());
+        }
+      }
+    }
+
+    Assert.assertEquals(8L, (long) order.size());
+    Assert.assertEquals(Integer.valueOf(0), order.get(0));
+    Assert.assertEquals(Integer.valueOf(1), order.get(1));
+    Assert.assertEquals(Integer.valueOf(2), order.get(2));
+    Assert.assertEquals(Integer.valueOf(3), order.get(3));
+    Assert.assertEquals(Integer.valueOf(4), order.get(4));
+    Assert.assertEquals(Integer.valueOf(5), order.get(5));
+    Assert.assertEquals(Integer.valueOf(6), order.get(6));
+    Assert.assertEquals(Integer.valueOf(7), order.get(7));
+  }
+
   static class JOTreeNodeUnimplemented<A> implements JOTreeNodeType<A>
   {
     @Override
@@ -689,6 +884,22 @@ public abstract class JOTreeNodeContract
     public <T> void forEachBreadthFirst(
       final T context,
       final JOTreeNodeForEachFunctionType<A, T> f)
+    {
+      throw new UnimplementedCodeException();
+    }
+
+    @Override
+    public <T, B> JOTreeNodeType<B> mapDepthFirst(
+      final T context,
+      final JOTreeNodeMapFunctionType<A, T, B> f)
+    {
+      throw new UnimplementedCodeException();
+    }
+
+    @Override
+    public <T, B> JOTreeNodeType<B> mapBreadthFirst(
+      final T context,
+      final JOTreeNodeMapFunctionType<A, T, B> f)
     {
       throw new UnimplementedCodeException();
     }

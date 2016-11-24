@@ -16,6 +16,7 @@
 
 package com.io7m.jorchard.core;
 
+import com.io7m.jaffirm.core.Invariants;
 import com.io7m.jnull.NullCheck;
 import com.io7m.jnull.Nullable;
 
@@ -152,7 +153,7 @@ public final class JOTreeNode<A> implements JOTreeNodeType<A>
 
         final JOTreeNodeType<A> parent_previous = this.parent;
 
-        /**
+        /*
          * Remove this child from the existing parent. If this fails,
          * nothing needs to be restored.
          */
@@ -161,7 +162,7 @@ public final class JOTreeNode<A> implements JOTreeNodeType<A>
           parent_previous.childRemove(this);
         }
 
-        /**
+        /*
          * Add this node to the new parent. If this fails, the node is
          * detached.
          */
@@ -305,6 +306,96 @@ public final class JOTreeNode<A> implements JOTreeNodeType<A>
       for (final JOTreeNodeReadableType<A> child : next_children) {
         queue.add(new TraversalItem<>(next.depth + 1, child));
       }
+    }
+  }
+
+  @Override
+  public <T, B> JOTreeNodeType<B> mapDepthFirst(
+    final T context,
+    final JOTreeNodeMapFunctionType<A, T, B> f)
+  {
+    NullCheck.notNull(context);
+    NullCheck.notNull(f);
+
+    final Deque<MapItem<A, B>> stack = new LinkedList<>();
+    stack.push(new MapItem<>(0, null, this));
+
+    JOTreeNodeType<B> root = null;
+    while (!stack.isEmpty()) {
+      final MapItem<A, B> next = stack.pop();
+      final B r = f.apply(context, next.depth, next.node);
+
+      final JOTreeNodeType<B> node = create(r);
+      if (next.parent != null) {
+        node.setParent(next.parent);
+      } else {
+        Invariants.checkInvariant(root == null, "Root may only be set once");
+        Invariants.checkInvariant(next.depth == 0, "Root must be depth 0");
+        root = node;
+      }
+
+      final Collection<JOTreeNodeReadableType<A>> next_children =
+        next.node.childrenReadable();
+      for (final JOTreeNodeReadableType<A> child : next_children) {
+        stack.push(new MapItem<>(next.depth + 1, node, child));
+      }
+    }
+
+    return NullCheck.notNull(root, "Root");
+  }
+
+  @Override
+  public <T, B> JOTreeNodeType<B> mapBreadthFirst(
+    final T context,
+    final JOTreeNodeMapFunctionType<A, T, B> f)
+  {
+    NullCheck.notNull(context);
+    NullCheck.notNull(f);
+
+    final Queue<MapItem<A, B>> queue = new LinkedList<>();
+    queue.add(new MapItem<>(0, null, this));
+
+    JOTreeNodeType<B> root = null;
+    while (!queue.isEmpty()) {
+      final MapItem<A, B> next = queue.poll();
+      final B r = f.apply(context, next.depth, next.node);
+
+      final JOTreeNodeType<B> node = create(r);
+      if (next.parent != null) {
+        node.setParent(next.parent);
+      } else {
+        Invariants.checkInvariant(root == null, "Root may only be set once");
+        Invariants.checkInvariant(next.depth == 0, "Root must be depth 0");
+        root = node;
+      }
+
+      final Collection<JOTreeNodeReadableType<A>> next_children =
+        next.node.childrenReadable();
+      for (final JOTreeNodeReadableType<A> child : next_children) {
+        queue.add(new MapItem<>(next.depth + 1, node, child));
+      }
+    }
+
+    return NullCheck.notNull(root, "Root");
+  }
+
+  private static final class MapItem<A, B>
+  {
+    private final int depth;
+    private final JOTreeNodeType<B> parent;
+    private final JOTreeNodeReadableType<A> node;
+
+    MapItem(
+      final int in_depth,
+      final JOTreeNodeType<B> in_parent,
+      final JOTreeNodeReadableType<A> in_value)
+    {
+      this.depth = in_depth;
+      this.parent = in_parent;
+      if (this.depth > 0) {
+        NullCheck.notNull(in_parent, "Parent");
+      }
+      this.node = NullCheck.notNull(in_value);
     }
   }
 
