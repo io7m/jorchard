@@ -3,12 +3,18 @@
   <c:project>io7m-jorchard</c:project>
 
   <c:release c:ticket-system="com.github.io7m.jorchard">
-    <c:date>2016-07-07</c:date>
-    <c:version>0.1.0</c:version>
+    <c:date>2016-11-23</c:date>
+    <c:version>0.2.1</c:version>
     <c:item>
-      <c:date>2016-07-07</c:date>
+      <c:date>2016-11-23</c:date>
       <c:type-code-new/>
-      <c:summary>Initial release.</c:summary>
+      <c:summary>The published jar file is now an OSGi bundle.</c:summary>
+    </c:item>
+
+    <c:item>
+      <c:date>2016-12-03</c:date>
+      <c:type-code-new/>
+      <c:summary>Add JOTreeNode.mapBreadthFirst() and JOTreeNode.mapDepthFirst()</c:summary>
     </c:item>
   </c:release>
 
@@ -29,6 +35,16 @@
       <c:date>2016-07-11</c:date>
       <c:type-code-new/>
       <c:summary>Add the ability to prevent the detachment of nodes.</c:summary>
+    </c:item>
+  </c:release>
+
+  <c:release c:ticket-system="com.github.io7m.jorchard">
+    <c:date>2016-07-07</c:date>
+    <c:version>0.1.0</c:version>
+    <c:item>
+      <c:date>2016-07-07</c:date>
+      <c:type-code-new/>
+      <c:summary>Initial release.</c:summary>
     </c:item>
   </c:release>
 

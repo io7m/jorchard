@@ -18,6 +18,7 @@ package com.io7m.jorchard.tests.core;
 
 import com.io7m.jorchard.core.JOTreeExceptionCycle;
 import com.io7m.jorchard.core.JOTreeNodeForEachFunctionType;
+import com.io7m.jorchard.core.JOTreeNodeMapFunctionType;
 import com.io7m.jorchard.core.JOTreeNodeReadableType;
 import com.io7m.jorchard.core.JOTreeNodeType;
 
@@ -121,5 +122,21 @@ public class DelegatingNode<A> implements JOTreeNodeType<A>
     final JOTreeNodeForEachFunctionType<A, T> f)
   {
     this.actual.forEachBreadthFirst(context, f);
+  }
+
+  @Override
+  public <T, B> JOTreeNodeType<B> mapDepthFirst(
+    final T context,
+    final JOTreeNodeMapFunctionType<A, T, B> f)
+  {
+    return this.actual.mapDepthFirst(context, f);
+  }
+
+  @Override
+  public <T, B> JOTreeNodeType<B> mapBreadthFirst(
+    final T context,
+    final JOTreeNodeMapFunctionType<A, T, B> f)
+  {
+    return this.actual.mapBreadthFirst(context, f);
   }
 }
