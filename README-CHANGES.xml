@@ -10,6 +10,12 @@
       <c:type-code-new/>
       <c:summary>The published jar file is now an OSGi bundle.</c:summary>
     </c:item>
+
+    <c:item>
+      <c:date>2016-12-03</c:date>
+      <c:type-code-new/>
+      <c:summary>Add JOTreeNode.mapBreadthFirst() and JOTreeNode.mapDepthFirst()</c:summary>
+    </c:item>
   </c:release>
 
   <c:release c:ticket-system="com.github.io7m.jorchard">
