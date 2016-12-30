@@ -126,7 +126,8 @@ public final class JOTreeNode<A> implements JOTreeNodeType<A>
   }
 
   @Override
-  public void setParent(final JOTreeNodeType<A> parent_new)
+  public JOTreeNodeType<A> setParent(
+    final JOTreeNodeType<A> parent_new)
   {
     NullCheck.notNull(parent_new);
 
@@ -179,6 +180,8 @@ public final class JOTreeNode<A> implements JOTreeNodeType<A>
         this.recursing = false;
       }
     }
+
+    return this;
   }
 
   private void checkDetach()
@@ -201,7 +204,7 @@ public final class JOTreeNode<A> implements JOTreeNodeType<A>
   }
 
   @Override
-  public void detach()
+  public JOTreeNodeType<A> detach()
   {
     if (this.parent != null) {
       this.checkDetach();
@@ -218,6 +221,8 @@ public final class JOTreeNode<A> implements JOTreeNodeType<A>
         this.recursing = false;
       }
     }
+
+    return this;
   }
 
   @Override
@@ -227,7 +232,8 @@ public final class JOTreeNode<A> implements JOTreeNodeType<A>
   }
 
   @Override
-  public void childRemove(final JOTreeNodeType<A> child)
+  public JOTreeNodeType<A> childRemove(
+    final JOTreeNodeType<A> child)
   {
     if (!this.recursing) {
       try {
@@ -238,10 +244,13 @@ public final class JOTreeNode<A> implements JOTreeNodeType<A>
         this.recursing = false;
       }
     }
+
+    return this;
   }
 
   @Override
-  public void childAdd(final JOTreeNodeType<A> child)
+  public JOTreeNodeType<A> childAdd(
+    final JOTreeNodeType<A> child)
   {
     if (!this.recursing) {
       try {
@@ -253,10 +262,13 @@ public final class JOTreeNode<A> implements JOTreeNodeType<A>
         this.recursing = false;
       }
     }
+
+    return this;
   }
 
   @Override
-  public boolean isDescendantOf(final JOTreeNodeReadableType<A> other)
+  public boolean isDescendantOf(
+    final JOTreeNodeReadableType<A> other)
   {
     NullCheck.notNull(other);
     if (Objects.equals(other, this)) {

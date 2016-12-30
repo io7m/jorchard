@@ -8,7 +8,7 @@
   <parent>
     <groupId>com.io7m.jorchard</groupId>
     <artifactId>io7m-jorchard</artifactId>
-    <version>0.2.1</version>
+    <version>0.3.0</version>
   </parent>
   <artifactId>io7m-jorchard-generators</artifactId>
 

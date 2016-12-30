@@ -162,7 +162,7 @@ public abstract class JOTreeNodeContract
     Assert.assertTrue(n0.isRoot());
     Assert.assertFalse(n0.parent().isPresent());
 
-    n0.detach();
+    Assert.assertEquals(n0, n0.detach());
 
     Assert.assertTrue(n0.isRoot());
     Assert.assertFalse(n0.parent().isPresent());
@@ -184,8 +184,10 @@ public abstract class JOTreeNodeContract
   @Test
   public final void testDeniedSetParent()
   {
-    final JOTreeNodeType<Integer> n2 = this.create(Integer.valueOf(2));
-    final JOTreeNodeType<Integer> n1 = this.create(Integer.valueOf(1));
+    final JOTreeNodeType<Integer> n2 =
+      this.create(Integer.valueOf(2));
+    final JOTreeNodeType<Integer> n1 =
+      this.create(Integer.valueOf(1));
     final JOTreeNodeType<Integer> n0 =
       this.createWithDetachCheck(Integer.valueOf(0), () -> false);
 
@@ -216,11 +218,11 @@ public abstract class JOTreeNodeContract
     Assert.assertTrue(n0.isRoot());
     Assert.assertTrue(n1.isRoot());
 
-    n0.setParent(n1);
+    Assert.assertEquals(n0, n0.setParent(n1));
     Assert.assertFalse(n0.isRoot());
     Assert.assertTrue(n1.isRoot());
 
-    n0.detach();
+    Assert.assertEquals(n0, n0.detach());
     Assert.assertTrue(n0.isRoot());
     Assert.assertTrue(n1.isRoot());
   }
@@ -286,9 +288,9 @@ public abstract class JOTreeNodeContract
     Assert.assertFalse(n2.parent().isPresent());
     Assert.assertFalse(n3.parent().isPresent());
 
-    n0.childAdd(n1);
-    n0.childAdd(n2);
-    n0.childAdd(n3);
+    Assert.assertEquals(n0, n0.childAdd(n1));
+    Assert.assertEquals(n0, n0.childAdd(n2));
+    Assert.assertEquals(n0, n0.childAdd(n3));
 
     Assert.assertEquals(Optional.of(n0), n1.parentReadable());
     Assert.assertEquals(Optional.of(n0), n2.parentReadable());
@@ -311,7 +313,7 @@ public abstract class JOTreeNodeContract
     Assert.assertTrue(n0_children_ro.contains(n2));
     Assert.assertTrue(n0_children_ro.contains(n3));
 
-    n0.childRemove(n3);
+    Assert.assertEquals(n0, n0.childRemove(n3));
 
     Assert.assertEquals(2L, (long) n0_children.size());
     Assert.assertTrue(n0_children.contains(n1));
@@ -323,7 +325,7 @@ public abstract class JOTreeNodeContract
     Assert.assertTrue(n0_children_ro.contains(n2));
     Assert.assertFalse(n0_children_ro.contains(n3));
 
-    n0.childRemove(n2);
+    Assert.assertEquals(n0, n0.childRemove(n2));
 
     Assert.assertEquals(1L, (long) n0_children.size());
     Assert.assertTrue(n0_children.contains(n1));
@@ -335,7 +337,7 @@ public abstract class JOTreeNodeContract
     Assert.assertFalse(n0_children_ro.contains(n2));
     Assert.assertFalse(n0_children_ro.contains(n3));
 
-    n0.childRemove(n1);
+    Assert.assertEquals(n0, n0.childRemove(n1));
 
     Assert.assertEquals(0L, (long) n0_children.size());
     Assert.assertFalse(n0_children.contains(n1));
@@ -371,9 +373,9 @@ public abstract class JOTreeNodeContract
     Assert.assertFalse(n2.parent().isPresent());
     Assert.assertFalse(n3.parent().isPresent());
 
-    n1.setParent(n0);
-    n2.setParent(n0);
-    n3.setParent(n0);
+    Assert.assertEquals(n1, n1.setParent(n0));
+    Assert.assertEquals(n2, n2.setParent(n0));
+    Assert.assertEquals(n3, n3.setParent(n0));
 
     Assert.assertEquals(Optional.of(n0), n1.parentReadable());
     Assert.assertEquals(Optional.of(n0), n2.parentReadable());
@@ -440,13 +442,13 @@ public abstract class JOTreeNodeContract
     final JOTreeNodeType<Integer> n1 = this.create(Integer.valueOf(1));
     final JOTreeNodeType<Integer> n2 = this.create(Integer.valueOf(2));
 
-    n1.setParent(n0);
+    Assert.assertEquals(n1, n1.setParent(n0));
 
     Assert.assertFalse(n2.children().contains(n1));
     Assert.assertTrue(n0.children().contains(n1));
     Assert.assertEquals(n0, n1.parent().get());
 
-    n1.setParent(n2);
+    Assert.assertEquals(n1, n1.setParent(n2));
 
     Assert.assertTrue(n2.children().contains(n1));
     Assert.assertFalse(n0.children().contains(n1));
@@ -526,7 +528,8 @@ public abstract class JOTreeNodeContract
       n1.setParent(new JOTreeNodeUnimplemented<Integer>()
       {
         @Override
-        public void childAdd(final JOTreeNodeType<Integer> child)
+        public JOTreeNodeType<Integer> childAdd(
+          final JOTreeNodeType<Integer> child)
           throws JOTreeExceptionCycle
         {
           throw new HostileImplementationException("Refusing to add");
@@ -811,7 +814,7 @@ public abstract class JOTreeNodeContract
     }
 
     @Override
-    public void detach()
+    public JOTreeNodeType<A> detach()
     {
       throw new UnimplementedCodeException();
     }
@@ -823,20 +826,23 @@ public abstract class JOTreeNodeContract
     }
 
     @Override
-    public void childRemove(final JOTreeNodeType<A> child)
+    public JOTreeNodeType<A> childRemove(
+      final JOTreeNodeType<A> child)
     {
       throw new UnimplementedCodeException();
     }
 
     @Override
-    public void childAdd(final JOTreeNodeType<A> child)
+    public JOTreeNodeType<A> childAdd(
+      final JOTreeNodeType<A> child)
       throws JOTreeExceptionCycle
     {
       throw new UnimplementedCodeException();
     }
 
     @Override
-    public void setParent(final JOTreeNodeType<A> new_parent)
+    public JOTreeNodeType<A> setParent(
+      final JOTreeNodeType<A> new_parent)
       throws JOTreeExceptionCycle
     {
       throw new UnimplementedCodeException();
@@ -867,7 +873,8 @@ public abstract class JOTreeNodeContract
     }
 
     @Override
-    public boolean isDescendantOf(final JOTreeNodeReadableType<A> other)
+    public boolean isDescendantOf(
+      final JOTreeNodeReadableType<A> other)
     {
       throw new UnimplementedCodeException();
     }
@@ -921,7 +928,7 @@ public abstract class JOTreeNodeContract
     }
 
     @Override
-    public void childRemove(final JOTreeNodeType<A> child)
+    public JOTreeNodeType<A> childRemove(final JOTreeNodeType<A> child)
     {
       throw new JOTreeNodeContract.HostileImplementationException(
         "Refusing to remove");
@@ -936,7 +943,7 @@ public abstract class JOTreeNodeContract
     }
 
     @Override
-    public void childAdd(final JOTreeNodeType<A> child)
+    public JOTreeNodeType<A> childAdd(final JOTreeNodeType<A> child)
       throws JOTreeExceptionCycle
     {
       throw new JOTreeNodeContract.HostileImplementationException(
@@ -952,7 +959,7 @@ public abstract class JOTreeNodeContract
     }
 
     @Override
-    public void setParent(final JOTreeNodeType<A> new_parent)
+    public JOTreeNodeType<A> setParent(final JOTreeNodeType<A> new_parent)
       throws JOTreeExceptionCycle
     {
       throw new JOTreeNodeContract.HostileImplementationException(
@@ -968,7 +975,7 @@ public abstract class JOTreeNodeContract
     }
 
     @Override
-    public void detach()
+    public JOTreeNodeType<A> detach()
     {
       throw new JOTreeNodeContract.HostileImplementationException(
         "Refusing to detach");

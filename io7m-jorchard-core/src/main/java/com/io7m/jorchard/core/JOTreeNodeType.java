@@ -29,9 +29,11 @@ public interface JOTreeNodeType<A> extends JOTreeNodeReadableType<A>
 {
   /**
    * Detach this node from its parent node.
+   *
+   * @return this
    */
 
-  void detach();
+  JOTreeNodeType<A> detach();
 
   /**
    * @return A read-only collection containing the children of this node
@@ -44,9 +46,12 @@ public interface JOTreeNodeType<A> extends JOTreeNodeReadableType<A>
    * child of this node.
    *
    * @param child A child node
+   *
+   * @return this
    */
 
-  void childRemove(final JOTreeNodeType<A> child);
+  JOTreeNodeType<A> childRemove(
+    final JOTreeNodeType<A> child);
 
   /**
    * Add a child to this node. Has no effect if the given node is already a
@@ -54,11 +59,14 @@ public interface JOTreeNodeType<A> extends JOTreeNodeReadableType<A>
    *
    * @param child A child node
    *
+   * @return this
+   *
    * @throws JOTreeExceptionCycle Iff adding the child would introduce a cycle
    *                              in the tree
    */
 
-  void childAdd(final JOTreeNodeType<A> child)
+  JOTreeNodeType<A> childAdd(
+    final JOTreeNodeType<A> child)
     throws JOTreeExceptionCycle;
 
   /**
@@ -66,11 +74,14 @@ public interface JOTreeNodeType<A> extends JOTreeNodeReadableType<A>
    *
    * @param new_parent The new parent node
    *
+   * @return this
+   *
    * @throws JOTreeExceptionCycle Iff setting the parent would introduce a cycle
    *                              in the tree
    */
 
-  void setParent(final JOTreeNodeType<A> new_parent)
+  JOTreeNodeType<A> setParent(
+    final JOTreeNodeType<A> new_parent)
     throws JOTreeExceptionCycle;
 
   /**
