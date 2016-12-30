@@ -60,7 +60,7 @@
   </c:release>
 
   <c:ticket-system xml:id="com.github.io7m.jorchard">
-    <c:ticket-url>https://github.com/io7m/jorchard/issues</c:ticket-url>
+    <c:ticket-url>https://github.com/io7m/jorchard/issues/</c:ticket-url>
   </c:ticket-system>
 
 </c:changelog>
