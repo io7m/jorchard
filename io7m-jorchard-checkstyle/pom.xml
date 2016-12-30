@@ -8,7 +8,7 @@
   <parent>
     <groupId>com.io7m.jorchard</groupId>
     <artifactId>io7m-jorchard</artifactId>
-    <version>0.3.0-SNAPSHOT</version>
+    <version>0.3.0</version>
   </parent>
   <artifactId>io7m-jorchard-checkstyle</artifactId>
 
