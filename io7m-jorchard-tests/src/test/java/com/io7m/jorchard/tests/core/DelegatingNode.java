@@ -35,9 +35,9 @@ public class DelegatingNode<A> implements JOTreeNodeType<A>
   }
 
   @Override
-  public void detach()
+  public JOTreeNodeType<A> detach()
   {
-    this.actual.detach();
+    return this.actual.detach();
   }
 
   @Override
@@ -47,23 +47,23 @@ public class DelegatingNode<A> implements JOTreeNodeType<A>
   }
 
   @Override
-  public void childRemove(final JOTreeNodeType<A> child)
+  public JOTreeNodeType<A> childRemove(final JOTreeNodeType<A> child)
   {
-    this.actual.childRemove(child);
+    return this.actual.childRemove(child);
   }
 
   @Override
-  public void childAdd(final JOTreeNodeType<A> child)
+  public JOTreeNodeType<A> childAdd(final JOTreeNodeType<A> child)
     throws JOTreeExceptionCycle
   {
-    this.actual.childAdd(child);
+    return this.actual.childAdd(child);
   }
 
   @Override
-  public void setParent(final JOTreeNodeType<A> new_parent)
+  public JOTreeNodeType<A> setParent(final JOTreeNodeType<A> new_parent)
     throws JOTreeExceptionCycle
   {
-    this.actual.setParent(new_parent);
+    return this.actual.setParent(new_parent);
   }
 
   @Override

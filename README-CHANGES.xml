@@ -3,6 +3,17 @@
   <c:project>io7m-jorchard</c:project>
 
   <c:release c:ticket-system="com.github.io7m.jorchard">
+    <c:date>2016-12-30</c:date>
+    <c:version>0.3.0</c:version>
+    <c:item>
+      <c:date>2016-12-30</c:date>
+      <c:type-code-change/>
+      <c:ticket>3</c:ticket>
+      <c:summary>Change the API to return references to nodes instead of void.</c:summary>
+    </c:item>
+  </c:release>
+
+  <c:release c:ticket-system="com.github.io7m.jorchard">
     <c:date>2016-11-23</c:date>
     <c:version>0.2.1</c:version>
     <c:item>
