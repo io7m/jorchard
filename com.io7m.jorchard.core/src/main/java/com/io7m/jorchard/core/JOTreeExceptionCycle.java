@@ -19,13 +19,20 @@ package com.io7m.jorchard.core;
 import com.io7m.jnull.NullCheck;
 
 /**
- * The type of exceptions raised by the package.
+ * The type of exceptions raised when an operation would introduce a cycle into
+ * a tree.
  */
 
-public abstract class JOTreeException extends RuntimeException
+public final class JOTreeExceptionCycle extends JOTreeException
 {
-  protected JOTreeException(final String message)
+  /**
+   * Construct an exception.
+   *
+   * @param message The message
+   */
+
+  public JOTreeExceptionCycle(final String message)
   {
-    super(NullCheck.notNull(message));
+    super(NullCheck.notNull(message, "Message"));
   }
 }

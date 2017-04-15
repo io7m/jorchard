@@ -7,15 +7,19 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>com.io7m.jorchard</groupId>
-    <artifactId>io7m-jorchard</artifactId>
-    <version>0.3.0</version>
+    <artifactId>com.io7m.jorchard</artifactId>
+    <version>0.3.1</version>
   </parent>
-  <artifactId>io7m-jorchard-documentation</artifactId>
+  <artifactId>com.io7m.jorchard.documentation</artifactId>
 
   <packaging>jar</packaging>
-  <name>io7m-jorchard-documentation</name>
+  <name>com.io7m.jorchard.documentation</name>
   <description>Tree types (Documentation)</description>
   <url>http://io7m.github.io/jorchard/</url>
+
+  <properties>
+    <mdep.analyze.skip>true</mdep.analyze.skip>
+  </properties>
 
   <scm>
     <url>${project.parent.scm.url}</url>
@@ -26,12 +30,13 @@
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>io7m-jorchard-core</artifactId>
+      <artifactId>com.io7m.jorchard.core</artifactId>
       <version>${project.version}</version>
     </dependency>
+
     <dependency>
       <groupId>com.io7m.jnull</groupId>
-      <artifactId>io7m-jnull-core</artifactId>
+      <artifactId>com.io7m.jnull.core</artifactId>
     </dependency>
   </dependencies>
 

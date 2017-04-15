@@ -19,11 +19,11 @@ package com.io7m.jorchard.core;
 import com.io7m.jnull.NullCheck;
 
 /**
- * The type of exceptions raised when an operation would introduce a cycle into
- * a tree.
+ * The type of exceptions raised when an operation would detach a node that is
+ * not allowed to be detached.
  */
 
-public final class JOTreeExceptionCycle extends JOTreeException
+public final class JOTreeExceptionDetachDenied extends JOTreeException
 {
   /**
    * Construct an exception.
@@ -31,8 +31,8 @@ public final class JOTreeExceptionCycle extends JOTreeException
    * @param message The message
    */
 
-  public JOTreeExceptionCycle(final String message)
+  public JOTreeExceptionDetachDenied(final String message)
   {
-    super(NullCheck.notNull(message));
+    super(NullCheck.notNull(message, "Message"));
   }
 }

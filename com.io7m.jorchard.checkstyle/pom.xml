@@ -7,13 +7,13 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>com.io7m.jorchard</groupId>
-    <artifactId>io7m-jorchard</artifactId>
-    <version>0.3.0</version>
+    <artifactId>com.io7m.jorchard</artifactId>
+    <version>0.3.1</version>
   </parent>
-  <artifactId>io7m-jorchard-checkstyle</artifactId>
+  <artifactId>com.io7m.jorchard.checkstyle</artifactId>
 
   <packaging>jar</packaging>
-  <name>io7m-jorchard-checkstyle</name>
+  <name>com.io7m.jorchard.checkstyle</name>
   <description>Tree types (Checkstyle policy)</description>
   <url>http://io7m.github.io/jorchard/</url>
 
@@ -26,7 +26,7 @@
   <dependencies>
     <dependency>
       <groupId>com.io7m.jnull</groupId>
-      <artifactId>io7m-jnull-core</artifactId>
+      <artifactId>com.io7m.jnull.core</artifactId>
     </dependency>
   </dependencies>
 

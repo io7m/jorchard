@@ -19,20 +19,13 @@ package com.io7m.jorchard.core;
 import com.io7m.jnull.NullCheck;
 
 /**
- * The type of exceptions raised when an operation would detach a node that is
- * not allowed to be detached.
+ * The type of exceptions raised by the package.
  */
 
-public final class JOTreeExceptionDetachDenied extends JOTreeException
+public abstract class JOTreeException extends RuntimeException
 {
-  /**
-   * Construct an exception.
-   *
-   * @param message The message
-   */
-
-  public JOTreeExceptionDetachDenied(final String message)
+  protected JOTreeException(final String message)
   {
-    super(NullCheck.notNull(message));
+    super(NullCheck.notNull(message, "Message"));
   }
 }

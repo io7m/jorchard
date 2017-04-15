@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <c:changelog xmlns:c="http://schemas.io7m.com/changelog/2.0.0">
-  <c:project>io7m-jorchard</c:project>
+  <c:project>com.io7m.jorchard</c:project>
+
+  <c:release c:ticket-system="com.github.io7m.jorchard">
+    <c:date>2017-04-15</c:date>
+    <c:version>0.3.1</c:version>
+    <c:item>
+      <c:date>2017-04-15</c:date>
+      <c:type-code-change/>
+      <c:summary>Rename project. Use the new primogenitor POM and 2017 project conventions.</c:summary>
+    </c:item>
+  </c:release>
 
   <c:release c:ticket-system="com.github.io7m.jorchard">
     <c:date>2016-12-30</c:date>
@@ -60,7 +70,7 @@
   </c:release>
 
   <c:ticket-system xml:id="com.github.io7m.jorchard">
-    <c:ticket-url>https://github.com/io7m/jorchard/issues</c:ticket-url>
+    <c:ticket-url>https://github.com/io7m/jorchard/issues/</c:ticket-url>
   </c:ticket-system>
 
 </c:changelog>
