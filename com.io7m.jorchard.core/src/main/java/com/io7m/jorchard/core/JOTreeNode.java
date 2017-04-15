@@ -51,13 +51,17 @@ public final class JOTreeNode<A> implements JOTreeNodeType<A>
     final BooleanSupplier in_detach_check,
     final A in_value)
   {
+    this.children =
+      NullCheck.notNull(in_children, "Children");
+    this.value =
+      NullCheck.notNull(in_value, "Value");
+    this.detach_check =
+      NullCheck.notNull(in_detach_check, "Detach check");
+
     this.parent = null;
-    this.children = NullCheck.notNull(in_children);
     this.children_view_ro = Collections.unmodifiableCollection(this.children);
     this.children_view = Collections.unmodifiableCollection(this.children);
-    this.value = NullCheck.notNull(in_value);
     this.recursing = false;
-    this.detach_check = NullCheck.notNull(in_detach_check);
   }
 
   /**
@@ -129,7 +133,7 @@ public final class JOTreeNode<A> implements JOTreeNodeType<A>
   public JOTreeNodeType<A> setParent(
     final JOTreeNodeType<A> parent_new)
   {
-    NullCheck.notNull(parent_new);
+    NullCheck.notNull(parent_new, "Parent");
 
     if (parent_new.isDescendantOf(this)) {
       final StringBuilder sb = new StringBuilder(
@@ -270,7 +274,7 @@ public final class JOTreeNode<A> implements JOTreeNodeType<A>
   public boolean isDescendantOf(
     final JOTreeNodeReadableType<A> other)
   {
-    NullCheck.notNull(other);
+    NullCheck.notNull(other, "Other");
     if (Objects.equals(other, this)) {
       return true;
     }
@@ -282,8 +286,8 @@ public final class JOTreeNode<A> implements JOTreeNodeType<A>
     final T context,
     final JOTreeNodeForEachFunctionType<A, T> f)
   {
-    NullCheck.notNull(context);
-    NullCheck.notNull(f);
+    NullCheck.notNull(context, "Context");
+    NullCheck.notNull(f, "Function");
 
     final Deque<TraversalItem<A>> stack = new LinkedList<>();
     stack.push(new TraversalItem<>(0, this));
@@ -304,8 +308,8 @@ public final class JOTreeNode<A> implements JOTreeNodeType<A>
     final T context,
     final JOTreeNodeForEachFunctionType<A, T> f)
   {
-    NullCheck.notNull(context);
-    NullCheck.notNull(f);
+    NullCheck.notNull(context, "Context");
+    NullCheck.notNull(f, "Function");
 
     final Queue<TraversalItem<A>> queue = new LinkedList<>();
     queue.add(new TraversalItem<>(0, this));
@@ -326,8 +330,8 @@ public final class JOTreeNode<A> implements JOTreeNodeType<A>
     final T context,
     final JOTreeNodeMapFunctionType<A, T, B> f)
   {
-    NullCheck.notNull(context);
-    NullCheck.notNull(f);
+    NullCheck.notNull(context, "Context");
+    NullCheck.notNull(f, "Function");
 
     final Deque<MapItem<A, B>> stack = new LinkedList<>();
     stack.push(new MapItem<>(0, null, this));
@@ -361,8 +365,8 @@ public final class JOTreeNode<A> implements JOTreeNodeType<A>
     final T context,
     final JOTreeNodeMapFunctionType<A, T, B> f)
   {
-    NullCheck.notNull(context);
-    NullCheck.notNull(f);
+    NullCheck.notNull(context, "Context");
+    NullCheck.notNull(f, "Function");
 
     final Queue<MapItem<A, B>> queue = new LinkedList<>();
     queue.add(new MapItem<>(0, null, this));
@@ -407,7 +411,7 @@ public final class JOTreeNode<A> implements JOTreeNodeType<A>
       if (this.depth > 0) {
         NullCheck.notNull(in_parent, "Parent");
       }
-      this.node = NullCheck.notNull(in_value);
+      this.node = NullCheck.notNull(in_value, "Value");
     }
   }
 
@@ -421,7 +425,7 @@ public final class JOTreeNode<A> implements JOTreeNodeType<A>
       final JOTreeNodeReadableType<A> in_value)
     {
       this.depth = in_depth;
-      this.node = NullCheck.notNull(in_value);
+      this.node = NullCheck.notNull(in_value, "Value");
     }
   }
 }
