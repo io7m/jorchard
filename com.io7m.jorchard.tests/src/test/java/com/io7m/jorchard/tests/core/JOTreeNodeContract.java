@@ -16,7 +16,6 @@
 
 package com.io7m.jorchard.tests.core;
 
-import com.io7m.jfunctional.Unit;
 import com.io7m.jorchard.core.JOTreeExceptionCycle;
 import com.io7m.jorchard.core.JOTreeExceptionDetachDenied;
 import com.io7m.jorchard.core.JOTreeNodeForEachFunctionType;
@@ -54,7 +53,7 @@ public abstract class JOTreeNodeContract
   {
     final StringBuilder sb = new StringBuilder(128);
     LOG.debug("dumping tree {}", node);
-    node.forEachDepthFirst(Unit.unit(), (input, depth, n) -> {
+    node.forEachDepthFirst(Integer.valueOf(0), (input, depth, n) -> {
       sb.setLength(0);
       for (int index = 0; index < depth; ++index) {
         sb.append(" ");
@@ -678,7 +677,7 @@ public abstract class JOTreeNodeContract
     dump(n0);
     dump(r);
 
-    r.forEachDepthFirst(Unit.unit(), (input, depth, node) -> {
+    r.forEachDepthFirst(Integer.valueOf(0), (input, depth, node) -> {
       Assert.assertFalse(nodes_s.containsKey(node.value()));
       nodes_s.put(node.value(), node);
     });
@@ -761,7 +760,7 @@ public abstract class JOTreeNodeContract
     dump(n0);
     dump(r);
 
-    r.forEachDepthFirst(Unit.unit(), (input, depth, node) -> {
+    r.forEachDepthFirst(Integer.valueOf(0), (input, depth, node) -> {
       Assert.assertFalse(nodes_s.containsKey(node.value()));
       nodes_s.put(node.value(), node);
     });

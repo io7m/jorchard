@@ -15,8 +15,14 @@
  */
 
 /**
- * Tree generators.
+ * Tree types (Core)
  */
 
-package com.io7m.jorchard.generators;
+module com.io7m.jorchard.generators
+{
+  requires com.io7m.jaffirm.core;
+  requires com.io7m.jorchard.core;
+  requires quickcheck;
 
+  exports com.io7m.jorchard.generators;
+}

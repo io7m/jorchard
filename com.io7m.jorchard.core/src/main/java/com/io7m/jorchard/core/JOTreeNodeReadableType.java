@@ -80,8 +80,8 @@ public interface JOTreeNodeReadableType<A>
    */
 
   <T> void forEachDepthFirst(
-    final T context,
-    final JOTreeNodeForEachFunctionType<A, T> f);
+    T context,
+    JOTreeNodeForEachFunctionType<A, T> f);
 
   /**
    * <p>Visit each node in the tree in breadth-first order.</p>
@@ -95,8 +95,8 @@ public interface JOTreeNodeReadableType<A>
    */
 
   <T> void forEachBreadthFirst(
-    final T context,
-    final JOTreeNodeForEachFunctionType<A, T> f);
+    T context,
+    JOTreeNodeForEachFunctionType<A, T> f);
 
   /**
    * <p>Visit each node in the tree in depth-first order.</p>
@@ -113,8 +113,8 @@ public interface JOTreeNodeReadableType<A>
    */
 
   <T, B> JOTreeNodeType<B> mapDepthFirst(
-    final T context,
-    final JOTreeNodeMapFunctionType<A, T, B> f);
+    T context,
+    JOTreeNodeMapFunctionType<A, T, B> f);
 
   /**
    * <p>Visit each node in the tree in breadth-first order.</p>
@@ -131,6 +131,6 @@ public interface JOTreeNodeReadableType<A>
    */
 
   <T, B> JOTreeNodeType<B> mapBreadthFirst(
-    final T context,
-    final JOTreeNodeMapFunctionType<A, T, B> f);
+    T context,
+    JOTreeNodeMapFunctionType<A, T, B> f);
 }
