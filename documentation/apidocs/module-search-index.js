@@ -1,0 +1,1 @@
+moduleSearchIndex = [{"l":"com.io7m.jorchard.core"},{"l":"com.io7m.jorchard.documentation"}]
