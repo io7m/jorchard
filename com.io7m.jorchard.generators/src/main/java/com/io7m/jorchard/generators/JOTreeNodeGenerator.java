@@ -16,7 +16,7 @@
 
 package com.io7m.jorchard.generators;
 
-import com.io7m.jnull.NullCheck;
+import java.util.Objects;
 import com.io7m.jorchard.core.JOTreeNode;
 import com.io7m.jorchard.core.JOTreeNodeType;
 import net.java.quickcheck.Generator;
@@ -61,8 +61,8 @@ public final class JOTreeNodeGenerator<T> implements Generator<JOTreeNodeType<T>
     final Generator<T> in_gen,
     final double in_branch_chance)
   {
-    this.size_gen = NullCheck.notNull(in_size_gen, "Size generator");
-    this.gen = NullCheck.notNull(in_gen, "Generator");
+    this.size_gen = Objects.requireNonNull(in_size_gen, "Size generator");
+    this.gen = Objects.requireNonNull(in_gen, "Generator");
     this.branch_chance = in_branch_chance;
   }
 

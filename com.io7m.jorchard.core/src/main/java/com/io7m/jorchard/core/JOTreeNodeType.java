@@ -51,7 +51,7 @@ public interface JOTreeNodeType<A> extends JOTreeNodeReadableType<A>
    */
 
   JOTreeNodeType<A> childRemove(
-    final JOTreeNodeType<A> child);
+    JOTreeNodeType<A> child);
 
   /**
    * Add a child to this node. Has no effect if the given node is already a
@@ -66,7 +66,7 @@ public interface JOTreeNodeType<A> extends JOTreeNodeReadableType<A>
    */
 
   JOTreeNodeType<A> childAdd(
-    final JOTreeNodeType<A> child)
+    JOTreeNodeType<A> child)
     throws JOTreeExceptionCycle;
 
   /**
@@ -81,7 +81,7 @@ public interface JOTreeNodeType<A> extends JOTreeNodeReadableType<A>
    */
 
   JOTreeNodeType<A> setParent(
-    final JOTreeNodeType<A> new_parent)
+    JOTreeNodeType<A> new_parent)
     throws JOTreeExceptionCycle;
 
   /**

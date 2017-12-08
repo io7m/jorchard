@@ -17,8 +17,6 @@
 package com.io7m.jorchard.core;
 
 import com.io7m.jaffirm.core.Invariants;
-import com.io7m.jnull.NullCheck;
-import com.io7m.jnull.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -44,7 +42,7 @@ public final class JOTreeNode<A> implements JOTreeNodeType<A>
   private final Collection<JOTreeNodeType<A>> children_view;
   private final BooleanSupplier detach_check;
   private boolean recursing;
-  private @Nullable JOTreeNodeType<A> parent;
+  private JOTreeNodeType<A> parent;
 
   private JOTreeNode(
     final Collection<JOTreeNodeType<A>> in_children,
@@ -52,11 +50,11 @@ public final class JOTreeNode<A> implements JOTreeNodeType<A>
     final A in_value)
   {
     this.children =
-      NullCheck.notNull(in_children, "Children");
+      Objects.requireNonNull(in_children, "Children");
     this.value =
-      NullCheck.notNull(in_value, "Value");
+      Objects.requireNonNull(in_value, "Value");
     this.detach_check =
-      NullCheck.notNull(in_detach_check, "Detach check");
+      Objects.requireNonNull(in_detach_check, "Detach check");
 
     this.parent = null;
     this.children_view_ro = Collections.unmodifiableCollection(this.children);
@@ -133,7 +131,7 @@ public final class JOTreeNode<A> implements JOTreeNodeType<A>
   public JOTreeNodeType<A> setParent(
     final JOTreeNodeType<A> parent_new)
   {
-    NullCheck.notNull(parent_new, "Parent");
+    Objects.requireNonNull(parent_new, "Parent");
 
     if (parent_new.isDescendantOf(this)) {
       final StringBuilder sb = new StringBuilder(
@@ -274,7 +272,7 @@ public final class JOTreeNode<A> implements JOTreeNodeType<A>
   public boolean isDescendantOf(
     final JOTreeNodeReadableType<A> other)
   {
-    NullCheck.notNull(other, "Other");
+    Objects.requireNonNull(other, "Other");
     if (Objects.equals(other, this)) {
       return true;
     }
@@ -286,8 +284,8 @@ public final class JOTreeNode<A> implements JOTreeNodeType<A>
     final T context,
     final JOTreeNodeForEachFunctionType<A, T> f)
   {
-    NullCheck.notNull(context, "Context");
-    NullCheck.notNull(f, "Function");
+    Objects.requireNonNull(context, "Context");
+    Objects.requireNonNull(f, "Function");
 
     final Deque<TraversalItem<A>> stack = new LinkedList<>();
     stack.push(new TraversalItem<>(0, this));
@@ -308,8 +306,8 @@ public final class JOTreeNode<A> implements JOTreeNodeType<A>
     final T context,
     final JOTreeNodeForEachFunctionType<A, T> f)
   {
-    NullCheck.notNull(context, "Context");
-    NullCheck.notNull(f, "Function");
+    Objects.requireNonNull(context, "Context");
+    Objects.requireNonNull(f, "Function");
 
     final Queue<TraversalItem<A>> queue = new LinkedList<>();
     queue.add(new TraversalItem<>(0, this));
@@ -330,8 +328,8 @@ public final class JOTreeNode<A> implements JOTreeNodeType<A>
     final T context,
     final JOTreeNodeMapFunctionType<A, T, B> f)
   {
-    NullCheck.notNull(context, "Context");
-    NullCheck.notNull(f, "Function");
+    Objects.requireNonNull(context, "Context");
+    Objects.requireNonNull(f, "Function");
 
     final Deque<MapItem<A, B>> stack = new LinkedList<>();
     stack.push(new MapItem<>(0, null, this));
@@ -357,7 +355,7 @@ public final class JOTreeNode<A> implements JOTreeNodeType<A>
       }
     }
 
-    return NullCheck.notNull(root, "Root");
+    return Objects.requireNonNull(root, "Root");
   }
 
   @Override
@@ -365,8 +363,8 @@ public final class JOTreeNode<A> implements JOTreeNodeType<A>
     final T context,
     final JOTreeNodeMapFunctionType<A, T, B> f)
   {
-    NullCheck.notNull(context, "Context");
-    NullCheck.notNull(f, "Function");
+    Objects.requireNonNull(context, "Context");
+    Objects.requireNonNull(f, "Function");
 
     final Queue<MapItem<A, B>> queue = new LinkedList<>();
     queue.add(new MapItem<>(0, null, this));
@@ -392,7 +390,7 @@ public final class JOTreeNode<A> implements JOTreeNodeType<A>
       }
     }
 
-    return NullCheck.notNull(root, "Root");
+    return Objects.requireNonNull(root, "Root");
   }
 
   private static final class MapItem<A, B>
@@ -409,9 +407,9 @@ public final class JOTreeNode<A> implements JOTreeNodeType<A>
       this.depth = in_depth;
       this.parent = in_parent;
       if (this.depth > 0) {
-        NullCheck.notNull(in_parent, "Parent");
+        Objects.requireNonNull(in_parent, "Parent");
       }
-      this.node = NullCheck.notNull(in_value, "Value");
+      this.node = Objects.requireNonNull(in_value, "Value");
     }
   }
 
@@ -425,7 +423,7 @@ public final class JOTreeNode<A> implements JOTreeNodeType<A>
       final JOTreeNodeReadableType<A> in_value)
     {
       this.depth = in_depth;
-      this.node = NullCheck.notNull(in_value, "Value");
+      this.node = Objects.requireNonNull(in_value, "Value");
     }
   }
 }

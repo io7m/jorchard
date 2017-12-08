@@ -16,7 +16,7 @@
 
 package com.io7m.jorchard.core;
 
-import com.io7m.jnull.NullCheck;
+import java.util.Objects;
 
 /**
  * The type of exceptions raised by the package.
@@ -26,6 +26,6 @@ public abstract class JOTreeException extends RuntimeException
 {
   protected JOTreeException(final String message)
   {
-    super(NullCheck.notNull(message, "Message"));
+    super(Objects.requireNonNull(message, "Message"));
   }
 }

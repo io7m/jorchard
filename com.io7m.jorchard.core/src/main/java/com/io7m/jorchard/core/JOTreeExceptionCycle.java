@@ -16,7 +16,7 @@
 
 package com.io7m.jorchard.core;
 
-import com.io7m.jnull.NullCheck;
+import java.util.Objects;
 
 /**
  * The type of exceptions raised when an operation would introduce a cycle into
@@ -33,6 +33,6 @@ public final class JOTreeExceptionCycle extends JOTreeException
 
   public JOTreeExceptionCycle(final String message)
   {
-    super(NullCheck.notNull(message, "Message"));
+    super(Objects.requireNonNull(message, "Message"));
   }
 }
