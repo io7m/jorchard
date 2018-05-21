@@ -136,13 +136,14 @@ public final class JOTreeNode<A> implements JOTreeNodeType<A>
     if (parent_new.isDescendantOf(this)) {
       final StringBuilder sb = new StringBuilder(
         "Cannot set a descendant of this node to be the parent of this node.");
-      sb.append(System.lineSeparator());
+      final String separator = System.lineSeparator();
+      sb.append(separator);
       sb.append("  Descendant: ");
       sb.append(parent_new);
-      sb.append(System.lineSeparator());
+      sb.append(separator);
       sb.append("  This: ");
       sb.append(this);
-      sb.append(System.lineSeparator());
+      sb.append(separator);
       throw new JOTreeExceptionCycle(sb.toString());
     }
 
@@ -191,10 +192,11 @@ public final class JOTreeNode<A> implements JOTreeNodeType<A>
     if (!this.isDetachAllowed()) {
       final StringBuilder sb =
         new StringBuilder("This node may not be detached.");
-      sb.append(System.lineSeparator());
+      final String separator = System.lineSeparator();
+      sb.append(separator);
       sb.append("  This: ");
       sb.append(this);
-      sb.append(System.lineSeparator());
+      sb.append(separator);
       throw new JOTreeExceptionDetachDenied(sb.toString());
     }
   }
