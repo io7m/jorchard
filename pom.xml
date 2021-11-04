@@ -25,7 +25,6 @@
   </modules>
 
   <properties>
-    <com.codacy.id>2dcfa3d327364470a85f69a7848dbf00</com.codacy.id>
     <io7m.api.previousVersion>1.0.0</io7m.api.previousVersion>
   </properties>
 
@@ -122,17 +121,6 @@
   <build>
     <pluginManagement>
       <plugins>
-        <!-- Require JDK >= 11 -->
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <configuration>
-            <source>11</source>
-            <target>11</target>
-            <release>11</release>
-          </configuration>
-        </plugin>
-
         <!-- jstructural plugin for generating documentation. -->
         <plugin>
           <groupId>com.io7m.jstructural</groupId>
