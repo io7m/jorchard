@@ -32,11 +32,14 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
+
+import static org.junit.Assert.assertEquals;
 
 public abstract class JOTreeNodeContract
 {
@@ -99,15 +102,15 @@ public abstract class JOTreeNodeContract
       input.add(node.value());
     });
 
-    Assert.assertEquals(8L, (long) order.size());
-    Assert.assertEquals(Integer.valueOf(0), order.get(0));
-    Assert.assertEquals(Integer.valueOf(1), order.get(1));
-    Assert.assertEquals(Integer.valueOf(2), order.get(2));
-    Assert.assertEquals(Integer.valueOf(3), order.get(3));
-    Assert.assertEquals(Integer.valueOf(4), order.get(4));
-    Assert.assertEquals(Integer.valueOf(5), order.get(5));
-    Assert.assertEquals(Integer.valueOf(6), order.get(6));
-    Assert.assertEquals(Integer.valueOf(7), order.get(7));
+    assertEquals(8L, (long) order.size());
+    assertEquals(Integer.valueOf(0), order.get(0));
+    assertEquals(Integer.valueOf(1), order.get(1));
+    assertEquals(Integer.valueOf(2), order.get(2));
+    assertEquals(Integer.valueOf(3), order.get(3));
+    assertEquals(Integer.valueOf(4), order.get(4));
+    assertEquals(Integer.valueOf(5), order.get(5));
+    assertEquals(Integer.valueOf(6), order.get(6));
+    assertEquals(Integer.valueOf(7), order.get(7));
   }
 
   @Test
@@ -142,15 +145,15 @@ public abstract class JOTreeNodeContract
       LOG.debug("node {} {}", Integer.valueOf(depth), node.value());
     });
 
-    Assert.assertEquals(8L, (long) order.size());
-    Assert.assertEquals(Integer.valueOf(0), order.get(0));
-    Assert.assertEquals(Integer.valueOf(1), order.get(1));
-    Assert.assertEquals(Integer.valueOf(5), order.get(2));
-    Assert.assertEquals(Integer.valueOf(2), order.get(3));
-    Assert.assertEquals(Integer.valueOf(7), order.get(4));
-    Assert.assertEquals(Integer.valueOf(6), order.get(5));
-    Assert.assertEquals(Integer.valueOf(4), order.get(6));
-    Assert.assertEquals(Integer.valueOf(3), order.get(7));
+    assertEquals(8L, (long) order.size());
+    assertEquals(Integer.valueOf(0), order.get(0));
+    assertEquals(Integer.valueOf(1), order.get(1));
+    assertEquals(Integer.valueOf(5), order.get(2));
+    assertEquals(Integer.valueOf(2), order.get(3));
+    assertEquals(Integer.valueOf(7), order.get(4));
+    assertEquals(Integer.valueOf(6), order.get(5));
+    assertEquals(Integer.valueOf(4), order.get(6));
+    assertEquals(Integer.valueOf(3), order.get(7));
   }
 
   @Test
@@ -161,7 +164,7 @@ public abstract class JOTreeNodeContract
     Assert.assertTrue(n0.isRoot());
     Assert.assertFalse(n0.parent().isPresent());
 
-    Assert.assertEquals(n0, n0.detach());
+    assertEquals(n0, n0.detach());
 
     Assert.assertTrue(n0.isRoot());
     Assert.assertFalse(n0.parent().isPresent());
@@ -217,11 +220,11 @@ public abstract class JOTreeNodeContract
     Assert.assertTrue(n0.isRoot());
     Assert.assertTrue(n1.isRoot());
 
-    Assert.assertEquals(n0, n0.setParent(n1));
+    assertEquals(n0, n0.setParent(n1));
     Assert.assertFalse(n0.isRoot());
     Assert.assertTrue(n1.isRoot());
 
-    Assert.assertEquals(n0, n0.detach());
+    assertEquals(n0, n0.detach());
     Assert.assertTrue(n0.isRoot());
     Assert.assertTrue(n1.isRoot());
   }
@@ -272,10 +275,10 @@ public abstract class JOTreeNodeContract
     final JOTreeNodeType<Integer> n2 = this.create(Integer.valueOf(2));
     final JOTreeNodeType<Integer> n3 = this.create(Integer.valueOf(3));
 
-    Assert.assertEquals(Integer.valueOf(0), n0.value());
-    Assert.assertEquals(Integer.valueOf(1), n1.value());
-    Assert.assertEquals(Integer.valueOf(2), n2.value());
-    Assert.assertEquals(Integer.valueOf(3), n3.value());
+    assertEquals(Integer.valueOf(0), n0.value());
+    assertEquals(Integer.valueOf(1), n1.value());
+    assertEquals(Integer.valueOf(2), n2.value());
+    assertEquals(Integer.valueOf(3), n3.value());
 
     Assert.assertFalse(n0.parentReadable().isPresent());
     Assert.assertFalse(n1.parentReadable().isPresent());
@@ -287,63 +290,63 @@ public abstract class JOTreeNodeContract
     Assert.assertFalse(n2.parent().isPresent());
     Assert.assertFalse(n3.parent().isPresent());
 
-    Assert.assertEquals(n0, n0.childAdd(n1));
-    Assert.assertEquals(n0, n0.childAdd(n2));
-    Assert.assertEquals(n0, n0.childAdd(n3));
+    assertEquals(n0, n0.childAdd(n1));
+    assertEquals(n0, n0.childAdd(n2));
+    assertEquals(n0, n0.childAdd(n3));
 
-    Assert.assertEquals(Optional.of(n0), n1.parentReadable());
-    Assert.assertEquals(Optional.of(n0), n2.parentReadable());
-    Assert.assertEquals(Optional.of(n0), n3.parentReadable());
+    assertEquals(Optional.of(n0), n1.parentReadable());
+    assertEquals(Optional.of(n0), n2.parentReadable());
+    assertEquals(Optional.of(n0), n3.parentReadable());
 
-    Assert.assertEquals(Optional.of(n0), n1.parent());
-    Assert.assertEquals(Optional.of(n0), n2.parent());
-    Assert.assertEquals(Optional.of(n0), n3.parent());
+    assertEquals(Optional.of(n0), n1.parent());
+    assertEquals(Optional.of(n0), n2.parent());
+    assertEquals(Optional.of(n0), n3.parent());
 
     final Collection<JOTreeNodeType<Integer>> n0_children = n0.children();
     final Collection<JOTreeNodeReadableType<Integer>> n0_children_ro = n0.childrenReadable();
 
-    Assert.assertEquals(3L, (long) n0_children.size());
+    assertEquals(3L, (long) n0_children.size());
     Assert.assertTrue(n0_children.contains(n1));
     Assert.assertTrue(n0_children.contains(n2));
     Assert.assertTrue(n0_children.contains(n3));
 
-    Assert.assertEquals(3L, (long) n0_children_ro.size());
+    assertEquals(3L, (long) n0_children_ro.size());
     Assert.assertTrue(n0_children_ro.contains(n1));
     Assert.assertTrue(n0_children_ro.contains(n2));
     Assert.assertTrue(n0_children_ro.contains(n3));
 
-    Assert.assertEquals(n0, n0.childRemove(n3));
+    assertEquals(n0, n0.childRemove(n3));
 
-    Assert.assertEquals(2L, (long) n0_children.size());
+    assertEquals(2L, (long) n0_children.size());
     Assert.assertTrue(n0_children.contains(n1));
     Assert.assertTrue(n0_children.contains(n2));
     Assert.assertFalse(n0_children.contains(n3));
 
-    Assert.assertEquals(2L, (long) n0_children_ro.size());
+    assertEquals(2L, (long) n0_children_ro.size());
     Assert.assertTrue(n0_children_ro.contains(n1));
     Assert.assertTrue(n0_children_ro.contains(n2));
     Assert.assertFalse(n0_children_ro.contains(n3));
 
-    Assert.assertEquals(n0, n0.childRemove(n2));
+    assertEquals(n0, n0.childRemove(n2));
 
-    Assert.assertEquals(1L, (long) n0_children.size());
+    assertEquals(1L, (long) n0_children.size());
     Assert.assertTrue(n0_children.contains(n1));
     Assert.assertFalse(n0_children.contains(n2));
     Assert.assertFalse(n0_children.contains(n3));
 
-    Assert.assertEquals(1L, (long) n0_children_ro.size());
+    assertEquals(1L, (long) n0_children_ro.size());
     Assert.assertTrue(n0_children_ro.contains(n1));
     Assert.assertFalse(n0_children_ro.contains(n2));
     Assert.assertFalse(n0_children_ro.contains(n3));
 
-    Assert.assertEquals(n0, n0.childRemove(n1));
+    assertEquals(n0, n0.childRemove(n1));
 
-    Assert.assertEquals(0L, (long) n0_children.size());
+    assertEquals(0L, (long) n0_children.size());
     Assert.assertFalse(n0_children.contains(n1));
     Assert.assertFalse(n0_children.contains(n2));
     Assert.assertFalse(n0_children.contains(n3));
 
-    Assert.assertEquals(0L, (long) n0_children_ro.size());
+    assertEquals(0L, (long) n0_children_ro.size());
     Assert.assertFalse(n0_children_ro.contains(n1));
     Assert.assertFalse(n0_children_ro.contains(n2));
     Assert.assertFalse(n0_children_ro.contains(n3));
@@ -357,10 +360,10 @@ public abstract class JOTreeNodeContract
     final JOTreeNodeType<Integer> n2 = this.create(Integer.valueOf(2));
     final JOTreeNodeType<Integer> n3 = this.create(Integer.valueOf(3));
 
-    Assert.assertEquals(Integer.valueOf(0), n0.value());
-    Assert.assertEquals(Integer.valueOf(1), n1.value());
-    Assert.assertEquals(Integer.valueOf(2), n2.value());
-    Assert.assertEquals(Integer.valueOf(3), n3.value());
+    assertEquals(Integer.valueOf(0), n0.value());
+    assertEquals(Integer.valueOf(1), n1.value());
+    assertEquals(Integer.valueOf(2), n2.value());
+    assertEquals(Integer.valueOf(3), n3.value());
 
     Assert.assertFalse(n0.parentReadable().isPresent());
     Assert.assertFalse(n1.parentReadable().isPresent());
@@ -372,63 +375,63 @@ public abstract class JOTreeNodeContract
     Assert.assertFalse(n2.parent().isPresent());
     Assert.assertFalse(n3.parent().isPresent());
 
-    Assert.assertEquals(n1, n1.setParent(n0));
-    Assert.assertEquals(n2, n2.setParent(n0));
-    Assert.assertEquals(n3, n3.setParent(n0));
+    assertEquals(n1, n1.setParent(n0));
+    assertEquals(n2, n2.setParent(n0));
+    assertEquals(n3, n3.setParent(n0));
 
-    Assert.assertEquals(Optional.of(n0), n1.parentReadable());
-    Assert.assertEquals(Optional.of(n0), n2.parentReadable());
-    Assert.assertEquals(Optional.of(n0), n3.parentReadable());
+    assertEquals(Optional.of(n0), n1.parentReadable());
+    assertEquals(Optional.of(n0), n2.parentReadable());
+    assertEquals(Optional.of(n0), n3.parentReadable());
 
-    Assert.assertEquals(Optional.of(n0), n1.parent());
-    Assert.assertEquals(Optional.of(n0), n2.parent());
-    Assert.assertEquals(Optional.of(n0), n3.parent());
+    assertEquals(Optional.of(n0), n1.parent());
+    assertEquals(Optional.of(n0), n2.parent());
+    assertEquals(Optional.of(n0), n3.parent());
 
     final Collection<JOTreeNodeType<Integer>> n0_children = n0.children();
     final Collection<JOTreeNodeReadableType<Integer>> n0_children_ro = n0.childrenReadable();
 
-    Assert.assertEquals(3L, (long) n0_children.size());
+    assertEquals(3L, (long) n0_children.size());
     Assert.assertTrue(n0_children.contains(n1));
     Assert.assertTrue(n0_children.contains(n2));
     Assert.assertTrue(n0_children.contains(n3));
 
-    Assert.assertEquals(3L, (long) n0_children_ro.size());
+    assertEquals(3L, (long) n0_children_ro.size());
     Assert.assertTrue(n0_children_ro.contains(n1));
     Assert.assertTrue(n0_children_ro.contains(n2));
     Assert.assertTrue(n0_children_ro.contains(n3));
 
     n3.detach();
 
-    Assert.assertEquals(2L, (long) n0_children.size());
+    assertEquals(2L, (long) n0_children.size());
     Assert.assertTrue(n0_children.contains(n1));
     Assert.assertTrue(n0_children.contains(n2));
     Assert.assertFalse(n0_children.contains(n3));
 
-    Assert.assertEquals(2L, (long) n0_children_ro.size());
+    assertEquals(2L, (long) n0_children_ro.size());
     Assert.assertTrue(n0_children_ro.contains(n1));
     Assert.assertTrue(n0_children_ro.contains(n2));
     Assert.assertFalse(n0_children_ro.contains(n3));
 
     n2.detach();
 
-    Assert.assertEquals(1L, (long) n0_children.size());
+    assertEquals(1L, (long) n0_children.size());
     Assert.assertTrue(n0_children.contains(n1));
     Assert.assertFalse(n0_children.contains(n2));
     Assert.assertFalse(n0_children.contains(n3));
 
-    Assert.assertEquals(1L, (long) n0_children_ro.size());
+    assertEquals(1L, (long) n0_children_ro.size());
     Assert.assertTrue(n0_children_ro.contains(n1));
     Assert.assertFalse(n0_children_ro.contains(n2));
     Assert.assertFalse(n0_children_ro.contains(n3));
 
     n1.detach();
 
-    Assert.assertEquals(0L, (long) n0_children.size());
+    assertEquals(0L, (long) n0_children.size());
     Assert.assertFalse(n0_children.contains(n1));
     Assert.assertFalse(n0_children.contains(n2));
     Assert.assertFalse(n0_children.contains(n3));
 
-    Assert.assertEquals(0L, (long) n0_children_ro.size());
+    assertEquals(0L, (long) n0_children_ro.size());
     Assert.assertFalse(n0_children_ro.contains(n1));
     Assert.assertFalse(n0_children_ro.contains(n2));
     Assert.assertFalse(n0_children_ro.contains(n3));
@@ -441,17 +444,17 @@ public abstract class JOTreeNodeContract
     final JOTreeNodeType<Integer> n1 = this.create(Integer.valueOf(1));
     final JOTreeNodeType<Integer> n2 = this.create(Integer.valueOf(2));
 
-    Assert.assertEquals(n1, n1.setParent(n0));
+    assertEquals(n1, n1.setParent(n0));
 
     Assert.assertFalse(n2.children().contains(n1));
     Assert.assertTrue(n0.children().contains(n1));
-    Assert.assertEquals(n0, n1.parent().get());
+    assertEquals(n0, n1.parent().get());
 
-    Assert.assertEquals(n1, n1.setParent(n2));
+    assertEquals(n1, n1.setParent(n2));
 
     Assert.assertTrue(n2.children().contains(n1));
     Assert.assertFalse(n0.children().contains(n1));
-    Assert.assertEquals(n2, n1.parent().get());
+    assertEquals(n2, n1.parent().get());
   }
 
   @Test
@@ -478,6 +481,37 @@ public abstract class JOTreeNodeContract
     n2.setParent(n0);
   }
 
+  @Test
+  public final void testSortChildren()
+  {
+    final JOTreeNodeType<Integer> n0 = this.create(Integer.valueOf(0));
+    final JOTreeNodeType<Integer> n1 = this.create(Integer.valueOf(1));
+    final JOTreeNodeType<Integer> n2 = this.create(Integer.valueOf(2));
+    final JOTreeNodeType<Integer> n3 = this.create(Integer.valueOf(3));
+
+    n1.setParent(n0);
+    n2.setParent(n0);
+    n3.setParent(n0);
+
+    n0.childrenSort(Comparator.naturalOrder());
+
+    {
+      final var nodes = n0.children();
+      assertEquals(Integer.valueOf(1), nodes.get(0).value());
+      assertEquals(Integer.valueOf(2), nodes.get(1).value());
+      assertEquals(Integer.valueOf(3), nodes.get(2).value());
+    }
+
+    n0.childrenSort(Comparator.reverseOrder());
+
+    {
+      final var nodes = n0.children();
+      assertEquals(Integer.valueOf(3), nodes.get(0).value());
+      assertEquals(Integer.valueOf(2), nodes.get(1).value());
+      assertEquals(Integer.valueOf(1), nodes.get(2).value());
+    }
+  }
+
   /**
    * Checks that a parent that raises an exception when a child attempts to
    * setParent it doesn't corrupt the tree.
@@ -494,14 +528,14 @@ public abstract class JOTreeNodeContract
 
     n1.setParent(n0);
     Assert.assertTrue(n0.children().contains(n1));
-    Assert.assertEquals(n0, n1.parent().get());
+    assertEquals(n0, n1.parent().get());
 
     boolean caught = false;
 
     try {
       n1.setParent(n_timebomb);
     } catch (final HostileImplementationException e) {
-      Assert.assertEquals("Refusing to add", e.getMessage());
+      assertEquals("Refusing to add", e.getMessage());
       caught = true;
     }
 
@@ -542,7 +576,7 @@ public abstract class JOTreeNodeContract
         }
       });
     } catch (final HostileImplementationException e) {
-      Assert.assertEquals("Refusing to add", e.getMessage());
+      assertEquals("Refusing to add", e.getMessage());
       caught = true;
     }
 
@@ -564,7 +598,7 @@ public abstract class JOTreeNodeContract
 
     n1.setParent(n_timebomb);
 
-    Assert.assertEquals(n_timebomb, n1.parent().get());
+    assertEquals(n_timebomb, n1.parent().get());
     Assert.assertTrue(n_timebomb.children().contains(n1));
 
     boolean caught = false;
@@ -572,12 +606,12 @@ public abstract class JOTreeNodeContract
     try {
       n1.detach();
     } catch (final HostileImplementationException e) {
-      Assert.assertEquals("Refusing to remove", e.getMessage());
+      assertEquals("Refusing to remove", e.getMessage());
       caught = true;
     }
 
     Assert.assertTrue(caught);
-    Assert.assertEquals(n_timebomb, n1.parent().get());
+    assertEquals(n_timebomb, n1.parent().get());
     Assert.assertTrue(n_timebomb.children().contains(n1));
   }
 
@@ -598,7 +632,7 @@ public abstract class JOTreeNodeContract
     try {
       n1.childAdd(n_timebomb);
     } catch (final HostileImplementationException e) {
-      Assert.assertEquals("Refusing to set parent", e.getMessage());
+      assertEquals("Refusing to set parent", e.getMessage());
       caught = true;
     }
 
@@ -621,7 +655,7 @@ public abstract class JOTreeNodeContract
 
     n1.childAdd(n_timebomb);
 
-    Assert.assertEquals(n1, n_timebomb.parent().get());
+    assertEquals(n1, n_timebomb.parent().get());
     Assert.assertTrue(n1.children().contains(n_timebomb));
 
     boolean caught = false;
@@ -629,12 +663,12 @@ public abstract class JOTreeNodeContract
     try {
       n1.childRemove(n_timebomb);
     } catch (final HostileImplementationException e) {
-      Assert.assertEquals("Refusing to detach", e.getMessage());
+      assertEquals("Refusing to detach", e.getMessage());
       caught = true;
     }
 
     Assert.assertTrue(caught);
-    Assert.assertEquals(n1, n_timebomb.parent().get());
+    assertEquals(n1, n_timebomb.parent().get());
     Assert.assertTrue(n1.children().contains(n_timebomb));
   }
 
@@ -682,7 +716,7 @@ public abstract class JOTreeNodeContract
       nodes_s.put(node.value(), node);
     });
 
-    Assert.assertEquals(8L, (long) nodes_s.size());
+    assertEquals(8L, (long) nodes_s.size());
 
     for (final Integer key : nodes_i.keySet()) {
       Assert.assertTrue(nodes_s.containsKey(key.toString()));
@@ -696,7 +730,7 @@ public abstract class JOTreeNodeContract
       final Collection<JOTreeNodeReadableType<String>> children_s =
         node_s.childrenReadable();
 
-      Assert.assertEquals(
+      assertEquals(
         (long) children_i.size(),
         (long) children_s.size());
 
@@ -705,20 +739,20 @@ public abstract class JOTreeNodeContract
         if (cs.parentReadable().isPresent()) {
           final JOTreeNodeReadableType<String> csp = cs.parentReadable().get();
           final JOTreeNodeReadableType<Integer> cip = ci.parentReadable().get();
-          Assert.assertEquals(csp.value(), cip.value().toString());
+          assertEquals(csp.value(), cip.value().toString());
         }
       }
     }
 
-    Assert.assertEquals(8L, (long) order.size());
-    Assert.assertEquals(Integer.valueOf(0), order.get(0));
-    Assert.assertEquals(Integer.valueOf(1), order.get(1));
-    Assert.assertEquals(Integer.valueOf(5), order.get(2));
-    Assert.assertEquals(Integer.valueOf(2), order.get(3));
-    Assert.assertEquals(Integer.valueOf(7), order.get(4));
-    Assert.assertEquals(Integer.valueOf(6), order.get(5));
-    Assert.assertEquals(Integer.valueOf(4), order.get(6));
-    Assert.assertEquals(Integer.valueOf(3), order.get(7));
+    assertEquals(8L, (long) order.size());
+    assertEquals(Integer.valueOf(0), order.get(0));
+    assertEquals(Integer.valueOf(1), order.get(1));
+    assertEquals(Integer.valueOf(5), order.get(2));
+    assertEquals(Integer.valueOf(2), order.get(3));
+    assertEquals(Integer.valueOf(7), order.get(4));
+    assertEquals(Integer.valueOf(6), order.get(5));
+    assertEquals(Integer.valueOf(4), order.get(6));
+    assertEquals(Integer.valueOf(3), order.get(7));
   }
 
   @Test
@@ -765,7 +799,7 @@ public abstract class JOTreeNodeContract
       nodes_s.put(node.value(), node);
     });
 
-    Assert.assertEquals(8L, (long) nodes_s.size());
+    assertEquals(8L, (long) nodes_s.size());
 
     for (final Integer key : nodes_i.keySet()) {
       Assert.assertTrue(nodes_s.containsKey(key.toString()));
@@ -779,7 +813,7 @@ public abstract class JOTreeNodeContract
       final Collection<JOTreeNodeReadableType<String>> children_s =
         node_s.childrenReadable();
 
-      Assert.assertEquals(
+      assertEquals(
         (long) children_i.size(),
         (long) children_s.size());
 
@@ -788,20 +822,20 @@ public abstract class JOTreeNodeContract
         if (cs.parentReadable().isPresent()) {
           final JOTreeNodeReadableType<String> csp = cs.parentReadable().get();
           final JOTreeNodeReadableType<Integer> cip = ci.parentReadable().get();
-          Assert.assertEquals(csp.value(), cip.value().toString());
+          assertEquals(csp.value(), cip.value().toString());
         }
       }
     }
 
-    Assert.assertEquals(8L, (long) order.size());
-    Assert.assertEquals(Integer.valueOf(0), order.get(0));
-    Assert.assertEquals(Integer.valueOf(1), order.get(1));
-    Assert.assertEquals(Integer.valueOf(2), order.get(2));
-    Assert.assertEquals(Integer.valueOf(3), order.get(3));
-    Assert.assertEquals(Integer.valueOf(4), order.get(4));
-    Assert.assertEquals(Integer.valueOf(5), order.get(5));
-    Assert.assertEquals(Integer.valueOf(6), order.get(6));
-    Assert.assertEquals(Integer.valueOf(7), order.get(7));
+    assertEquals(8L, (long) order.size());
+    assertEquals(Integer.valueOf(0), order.get(0));
+    assertEquals(Integer.valueOf(1), order.get(1));
+    assertEquals(Integer.valueOf(2), order.get(2));
+    assertEquals(Integer.valueOf(3), order.get(3));
+    assertEquals(Integer.valueOf(4), order.get(4));
+    assertEquals(Integer.valueOf(5), order.get(5));
+    assertEquals(Integer.valueOf(6), order.get(6));
+    assertEquals(Integer.valueOf(7), order.get(7));
   }
 
   static class JOTreeNodeUnimplemented<A> implements JOTreeNodeType<A>
@@ -819,7 +853,7 @@ public abstract class JOTreeNodeContract
     }
 
     @Override
-    public Collection<JOTreeNodeType<A>> children()
+    public List<JOTreeNodeType<A>> children()
     {
       throw new UnimplementedCodeException();
     }
@@ -854,6 +888,13 @@ public abstract class JOTreeNodeContract
     }
 
     @Override
+    public void childrenSortNodes(
+      final Comparator<JOTreeNodeType<A>> comparator)
+    {
+      throw new UnimplementedCodeException();
+    }
+
+    @Override
     public A value()
     {
       throw new UnimplementedCodeException();
@@ -866,7 +907,7 @@ public abstract class JOTreeNodeContract
     }
 
     @Override
-    public Collection<JOTreeNodeReadableType<A>> childrenReadable()
+    public List<JOTreeNodeReadableType<A>> childrenReadable()
     {
       throw new UnimplementedCodeException();
     }

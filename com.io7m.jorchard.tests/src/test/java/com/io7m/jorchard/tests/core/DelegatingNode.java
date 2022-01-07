@@ -23,6 +23,8 @@ import com.io7m.jorchard.core.JOTreeNodeReadableType;
 import com.io7m.jorchard.core.JOTreeNodeType;
 
 import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
 
 public class DelegatingNode<A> implements JOTreeNodeType<A>
@@ -41,7 +43,7 @@ public class DelegatingNode<A> implements JOTreeNodeType<A>
   }
 
   @Override
-  public Collection<JOTreeNodeType<A>> children()
+  public List<JOTreeNodeType<A>> children()
   {
     return this.actual.children();
   }
@@ -73,6 +75,13 @@ public class DelegatingNode<A> implements JOTreeNodeType<A>
   }
 
   @Override
+  public void childrenSortNodes(
+    final Comparator<JOTreeNodeType<A>> comparator)
+  {
+    this.actual.childrenSortNodes(comparator);
+  }
+
+  @Override
   public boolean isDetachAllowed()
   {
     return this.actual.isDetachAllowed();
@@ -97,7 +106,7 @@ public class DelegatingNode<A> implements JOTreeNodeType<A>
   }
 
   @Override
-  public Collection<JOTreeNodeReadableType<A>> childrenReadable()
+  public List<JOTreeNodeReadableType<A>> childrenReadable()
   {
     return this.actual.childrenReadable();
   }

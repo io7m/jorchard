@@ -21,8 +21,10 @@ import com.io7m.jaffirm.core.Invariants;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Deque;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Queue;
@@ -36,16 +38,16 @@ import java.util.function.BooleanSupplier;
 
 public final class JOTreeNode<A> implements JOTreeNodeType<A>
 {
-  private final Collection<JOTreeNodeReadableType<A>> children_view_ro;
-  private final Collection<JOTreeNodeType<A>> children;
+  private final List<JOTreeNodeReadableType<A>> children_view_ro;
+  private final List<JOTreeNodeType<A>> children;
   private final A value;
-  private final Collection<JOTreeNodeType<A>> children_view;
+  private final List<JOTreeNodeType<A>> children_view;
   private final BooleanSupplier detach_check;
   private boolean recursing;
   private JOTreeNodeType<A> parent;
 
   private JOTreeNode(
-    final Collection<JOTreeNodeType<A>> in_children,
+    final List<JOTreeNodeType<A>> in_children,
     final BooleanSupplier in_detach_check,
     final A in_value)
   {
@@ -57,8 +59,8 @@ public final class JOTreeNode<A> implements JOTreeNodeType<A>
       Objects.requireNonNull(in_detach_check, "Detach check");
 
     this.parent = null;
-    this.children_view_ro = Collections.unmodifiableCollection(this.children);
-    this.children_view = Collections.unmodifiableCollection(this.children);
+    this.children_view_ro = Collections.unmodifiableList(this.children);
+    this.children_view = Collections.unmodifiableList(this.children);
     this.recursing = false;
   }
 
@@ -116,7 +118,7 @@ public final class JOTreeNode<A> implements JOTreeNodeType<A>
   }
 
   @Override
-  public Collection<JOTreeNodeReadableType<A>> childrenReadable()
+  public List<JOTreeNodeReadableType<A>> childrenReadable()
   {
     return this.children_view_ro;
   }
@@ -208,6 +210,13 @@ public final class JOTreeNode<A> implements JOTreeNodeType<A>
   }
 
   @Override
+  public void childrenSortNodes(
+    final Comparator<JOTreeNodeType<A>> comparator)
+  {
+    this.children.sort(comparator);
+  }
+
+  @Override
   public JOTreeNodeType<A> detach()
   {
     if (this.parent != null) {
@@ -230,7 +239,7 @@ public final class JOTreeNode<A> implements JOTreeNodeType<A>
   }
 
   @Override
-  public Collection<JOTreeNodeType<A>> children()
+  public List<JOTreeNodeType<A>> children()
   {
     return this.children_view;
   }

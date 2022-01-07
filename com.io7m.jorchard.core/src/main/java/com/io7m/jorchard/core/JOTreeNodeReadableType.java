@@ -16,7 +16,7 @@
 
 package com.io7m.jorchard.core;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -58,7 +58,7 @@ public interface JOTreeNodeReadableType<A>
    * @return A read-only collection containing the children of this node
    */
 
-  Collection<JOTreeNodeReadableType<A>> childrenReadable();
+  List<JOTreeNodeReadableType<A>> childrenReadable();
 
   /**
    * @param other A node
