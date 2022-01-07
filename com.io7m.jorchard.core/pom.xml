@@ -15,7 +15,7 @@
   <packaging>jar</packaging>
   <name>com.io7m.jorchard.core</name>
   <description>Tree types (Core)</description>
-  <url>http://io7m.github.io/jorchard/</url>
+  <url>https://www.io7m.com/software/jorchard/</url>
 
   <dependencies>
     <dependency>
