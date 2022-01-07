@@ -20,6 +20,9 @@
 
 module com.io7m.jorchard.generators
 {
+  requires static org.osgi.annotation.bundle;
+  requires static org.osgi.annotation.versioning;
+
   requires com.io7m.jaffirm.core;
   requires com.io7m.jorchard.core;
   requires quickcheck;

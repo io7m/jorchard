@@ -39,10 +39,10 @@
         <c:change compatible="false" date="2017-12-08T00:00:00+00:00" summary="Remove jnull and jfunctional dependencies"/>
       </c:changes>
     </c:release>
-    <c:release date="2022-01-07T15:13:19+00:00" is-open="true" ticket-system="com.github.io7m.jorchard" version="2.0.0">
+    <c:release date="2022-01-07T15:25:28+00:00" is-open="true" ticket-system="com.github.io7m.jorchard" version="2.0.0">
       <c:changes>
-        <c:change date="2022-01-07T15:13:19+00:00"
-                  summary="Tree nodes now hold ordered lists instead of bare collections." compatible="false"/>
+        <c:change compatible="false" date="2022-01-07T00:00:00+00:00" summary="Tree nodes now hold ordered lists instead of bare collections."/>
+        <c:change compatible="false" date="2022-01-07T15:25:28+00:00" summary="Require JDK 17"/>
       </c:changes>
     </c:release>
   </c:releases>

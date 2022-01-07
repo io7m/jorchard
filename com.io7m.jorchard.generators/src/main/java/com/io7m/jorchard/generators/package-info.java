@@ -18,5 +18,9 @@
  * Tree generators.
  */
 
+@Version("2.0.0")
+@Export
 package com.io7m.jorchard.generators;
 
+import org.osgi.annotation.bundle.Export;
+import org.osgi.annotation.versioning.Version;

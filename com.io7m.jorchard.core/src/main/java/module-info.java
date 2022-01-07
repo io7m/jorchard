@@ -20,6 +20,9 @@
 
 module com.io7m.jorchard.core
 {
+  requires static org.osgi.annotation.bundle;
+  requires static org.osgi.annotation.versioning;
+
   requires com.io7m.jaffirm.core;
 
   exports com.io7m.jorchard.core;

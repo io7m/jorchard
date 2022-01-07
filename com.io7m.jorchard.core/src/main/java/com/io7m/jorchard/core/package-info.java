@@ -18,5 +18,9 @@
  * Core types and functions.
  */
 
+@Version("2.0.0")
+@Export
 package com.io7m.jorchard.core;
 
+import org.osgi.annotation.bundle.Export;
+import org.osgi.annotation.versioning.Version;
