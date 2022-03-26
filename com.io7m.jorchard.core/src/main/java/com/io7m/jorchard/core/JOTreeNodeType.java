@@ -16,7 +16,8 @@
 
 package com.io7m.jorchard.core;
 
-import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -39,7 +40,7 @@ public interface JOTreeNodeType<A> extends JOTreeNodeReadableType<A>
    * @return A read-only collection containing the children of this node
    */
 
-  Collection<JOTreeNodeType<A>> children();
+  List<JOTreeNodeType<A>> children();
 
   /**
    * Remove a child from this node. Has no effect if the given node is not a
@@ -89,4 +90,32 @@ public interface JOTreeNodeType<A> extends JOTreeNodeReadableType<A>
    */
 
   Optional<JOTreeNodeType<A>> parent();
+
+  /**
+   * Sort the children of this node. This will affect subsequent calls to {@link
+   * #forEachDepthFirst(Object, JOTreeNodeForEachFunctionType)} and {@link
+   * #forEachBreadthFirst(Object, JOTreeNodeForEachFunctionType)}, and will
+   * affect the order of {@link #children()}.
+   *
+   * @param comparator A node comparator
+   */
+
+  void childrenSortNodes(
+    Comparator<JOTreeNodeType<A>> comparator);
+
+  /**
+   * Sort the children of this node. This will affect subsequent calls to {@link
+   * #forEachDepthFirst(Object, JOTreeNodeForEachFunctionType)} and {@link
+   * #forEachBreadthFirst(Object, JOTreeNodeForEachFunctionType)}, and will
+   * affect the order of {@link #children()}.
+   *
+   * @param comparator A node comparator
+   */
+
+  default void childrenSort(
+    final Comparator<A> comparator)
+  {
+    this.childrenSortNodes(
+      (o1, o2) -> comparator.compare(o1.value(), o2.value()));
+  }
 }

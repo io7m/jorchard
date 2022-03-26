@@ -23,8 +23,8 @@ import net.java.quickcheck.QuickCheck;
 import net.java.quickcheck.characteristic.AbstractCharacteristic;
 import net.java.quickcheck.generator.support.IntegerGenerator;
 import net.java.quickcheck.generator.support.StringGenerator;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,11 +32,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public final class JOTreeNodeGeneratorTest
 {
-  private static final Logger LOG;
-
-  static {
-    LOG = LoggerFactory.getLogger(JOTreeNodeGeneratorTest.class);
-  }
+  private static final Logger LOG =
+    LoggerFactory.getLogger(JOTreeNodeGeneratorTest.class);
 
   @Test
   public void testGenerate()
@@ -65,10 +62,12 @@ public final class JOTreeNodeGeneratorTest
 
           LOG.debug("size: {}", Integer.valueOf(size.get()));
 
-          Assert.assertTrue(
-            "Tree is non-empty", size.get() > 0);
-          Assert.assertTrue(
-            "Tree has less than " + maximum_size, size.get() <= maximum_size);
+          Assertions.assertTrue(
+            size.get() > 0,
+            "Tree is non-empty");
+          Assertions.assertTrue(
+            size.get() <= maximum_size,
+            "Tree has less than " + maximum_size);
         }
       });
   }
@@ -82,7 +81,7 @@ public final class JOTreeNodeGeneratorTest
         sb.append(" ");
       }
       sb.append(node.value());
-      LOG.debug("{}", sb.toString());
+      LOG.debug("{}", sb);
     });
   }
 }

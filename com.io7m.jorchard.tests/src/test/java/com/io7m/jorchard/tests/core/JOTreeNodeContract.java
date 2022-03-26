@@ -23,63 +23,62 @@ import com.io7m.jorchard.core.JOTreeNodeMapFunctionType;
 import com.io7m.jorchard.core.JOTreeNodeReadableType;
 import com.io7m.jorchard.core.JOTreeNodeType;
 import com.io7m.junreachable.UnimplementedCodeException;
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+
 public abstract class JOTreeNodeContract
 {
-  private static final Logger LOG;
-
-  static {
-    LOG = LoggerFactory.getLogger(JOTreeNodeContract.class);
-  }
-
-  @Rule public final ExpectedException expected = ExpectedException.none();
+  private static final Logger LOG =
+    LoggerFactory.getLogger(JOTreeNodeContract.class);
 
   private static <T> void dump(
     final JOTreeNodeReadableType<T> node)
   {
-    final StringBuilder sb = new StringBuilder(128);
+    final var sb = new StringBuilder(128);
     LOG.debug("dumping tree {}", node);
     node.forEachDepthFirst(Integer.valueOf(0), (input, depth, n) -> {
       sb.setLength(0);
-      for (int index = 0; index < depth; ++index) {
+      for (var index = 0; index < depth; ++index) {
         sb.append(" ");
       }
       sb.append(n.value());
-      LOG.debug("{}", sb.toString());
+      LOG.debug("{}", sb);
     });
   }
 
-  protected abstract <A> JOTreeNodeType<A> create(final A x);
+  protected abstract <A> JOTreeNodeType<A> create(A x);
 
   protected abstract <A> JOTreeNodeType<A> createWithDetachCheck(
-    final A x,
-    final BooleanSupplier detach_check);
+    A x,
+    BooleanSupplier detach_check);
 
   @Test
   public final void testForEachDepthFirst()
   {
-    final JOTreeNodeType<Integer> n0 = this.create(Integer.valueOf(0));
-    final JOTreeNodeType<Integer> n1 = this.create(Integer.valueOf(1));
-    final JOTreeNodeType<Integer> n2 = this.create(Integer.valueOf(2));
-    final JOTreeNodeType<Integer> n3 = this.create(Integer.valueOf(3));
-    final JOTreeNodeType<Integer> n4 = this.create(Integer.valueOf(4));
-    final JOTreeNodeType<Integer> n5 = this.create(Integer.valueOf(5));
-    final JOTreeNodeType<Integer> n6 = this.create(Integer.valueOf(6));
-    final JOTreeNodeType<Integer> n7 = this.create(Integer.valueOf(7));
+    final var n0 = this.create(Integer.valueOf(0));
+    final var n1 = this.create(Integer.valueOf(1));
+    final var n2 = this.create(Integer.valueOf(2));
+    final var n3 = this.create(Integer.valueOf(3));
+    final var n4 = this.create(Integer.valueOf(4));
+    final var n5 = this.create(Integer.valueOf(5));
+    final var n6 = this.create(Integer.valueOf(6));
+    final var n7 = this.create(Integer.valueOf(7));
 
     n7.setParent(n5);
     n6.setParent(n5);
@@ -94,33 +93,33 @@ public abstract class JOTreeNodeContract
 
     final List<Integer> order = new ArrayList<>(10);
     n0.forEachDepthFirst(order, (input, depth, node) -> {
-      Assert.assertTrue(depth >= 0);
-      Assert.assertTrue(depth <= 3);
+      assertTrue(depth >= 0);
+      assertTrue(depth <= 3);
       input.add(node.value());
     });
 
-    Assert.assertEquals(8L, (long) order.size());
-    Assert.assertEquals(Integer.valueOf(0), order.get(0));
-    Assert.assertEquals(Integer.valueOf(1), order.get(1));
-    Assert.assertEquals(Integer.valueOf(2), order.get(2));
-    Assert.assertEquals(Integer.valueOf(3), order.get(3));
-    Assert.assertEquals(Integer.valueOf(4), order.get(4));
-    Assert.assertEquals(Integer.valueOf(5), order.get(5));
-    Assert.assertEquals(Integer.valueOf(6), order.get(6));
-    Assert.assertEquals(Integer.valueOf(7), order.get(7));
+    assertEquals(8L, order.size());
+    assertEquals(Integer.valueOf(0), order.get(0));
+    assertEquals(Integer.valueOf(1), order.get(1));
+    assertEquals(Integer.valueOf(2), order.get(2));
+    assertEquals(Integer.valueOf(3), order.get(3));
+    assertEquals(Integer.valueOf(4), order.get(4));
+    assertEquals(Integer.valueOf(5), order.get(5));
+    assertEquals(Integer.valueOf(6), order.get(6));
+    assertEquals(Integer.valueOf(7), order.get(7));
   }
 
   @Test
   public final void testForEachBreadthFirst()
   {
-    final JOTreeNodeType<Integer> n0 = this.create(Integer.valueOf(0));
-    final JOTreeNodeType<Integer> n1 = this.create(Integer.valueOf(1));
-    final JOTreeNodeType<Integer> n2 = this.create(Integer.valueOf(2));
-    final JOTreeNodeType<Integer> n3 = this.create(Integer.valueOf(3));
-    final JOTreeNodeType<Integer> n4 = this.create(Integer.valueOf(4));
-    final JOTreeNodeType<Integer> n5 = this.create(Integer.valueOf(5));
-    final JOTreeNodeType<Integer> n6 = this.create(Integer.valueOf(6));
-    final JOTreeNodeType<Integer> n7 = this.create(Integer.valueOf(7));
+    final var n0 = this.create(Integer.valueOf(0));
+    final var n1 = this.create(Integer.valueOf(1));
+    final var n2 = this.create(Integer.valueOf(2));
+    final var n3 = this.create(Integer.valueOf(3));
+    final var n4 = this.create(Integer.valueOf(4));
+    final var n5 = this.create(Integer.valueOf(5));
+    final var n6 = this.create(Integer.valueOf(6));
+    final var n7 = this.create(Integer.valueOf(7));
 
     n7.setParent(n5);
     n6.setParent(n5);
@@ -135,347 +134,384 @@ public abstract class JOTreeNodeContract
 
     final List<Integer> order = new ArrayList<>(10);
     n0.forEachBreadthFirst(order, (input, depth, node) -> {
-      Assert.assertTrue(depth >= 0);
-      Assert.assertTrue(depth <= 3);
+      assertTrue(depth >= 0);
+      assertTrue(depth <= 3);
       input.add(node.value());
 
       LOG.debug("node {} {}", Integer.valueOf(depth), node.value());
     });
 
-    Assert.assertEquals(8L, (long) order.size());
-    Assert.assertEquals(Integer.valueOf(0), order.get(0));
-    Assert.assertEquals(Integer.valueOf(1), order.get(1));
-    Assert.assertEquals(Integer.valueOf(5), order.get(2));
-    Assert.assertEquals(Integer.valueOf(2), order.get(3));
-    Assert.assertEquals(Integer.valueOf(7), order.get(4));
-    Assert.assertEquals(Integer.valueOf(6), order.get(5));
-    Assert.assertEquals(Integer.valueOf(4), order.get(6));
-    Assert.assertEquals(Integer.valueOf(3), order.get(7));
+    assertEquals(8L, order.size());
+    assertEquals(Integer.valueOf(0), order.get(0));
+    assertEquals(Integer.valueOf(1), order.get(1));
+    assertEquals(Integer.valueOf(5), order.get(2));
+    assertEquals(Integer.valueOf(2), order.get(3));
+    assertEquals(Integer.valueOf(7), order.get(4));
+    assertEquals(Integer.valueOf(6), order.get(5));
+    assertEquals(Integer.valueOf(4), order.get(6));
+    assertEquals(Integer.valueOf(3), order.get(7));
   }
 
   @Test
   public final void testDetachWithoutParent()
   {
-    final JOTreeNodeType<Integer> n0 = this.create(Integer.valueOf(0));
+    final var n0 = this.create(Integer.valueOf(0));
 
-    Assert.assertTrue(n0.isRoot());
-    Assert.assertFalse(n0.parent().isPresent());
+    assertTrue(n0.isRoot());
+    assertFalse(n0.parent().isPresent());
 
-    Assert.assertEquals(n0, n0.detach());
+    assertEquals(n0, n0.detach());
 
-    Assert.assertTrue(n0.isRoot());
-    Assert.assertFalse(n0.parent().isPresent());
+    assertTrue(n0.isRoot());
+    assertFalse(n0.parent().isPresent());
   }
 
   @Test
   public final void testDeniedDetach()
   {
-    final JOTreeNodeType<Integer> n1 = this.create(Integer.valueOf(1));
-    final JOTreeNodeType<Integer> n0 =
+    final var n1 = this.create(Integer.valueOf(1));
+    final var n0 =
       this.createWithDetachCheck(Integer.valueOf(0), () -> false);
 
     n0.setParent(n1);
 
-    this.expected.expect(JOTreeExceptionDetachDenied.class);
-    n0.detach();
+    assertThrows(JOTreeExceptionDetachDenied.class, () -> {
+      n0.detach();
+    });
   }
 
   @Test
   public final void testDeniedSetParent()
   {
-    final JOTreeNodeType<Integer> n2 =
+    final var n2 =
       this.create(Integer.valueOf(2));
-    final JOTreeNodeType<Integer> n1 =
+    final var n1 =
       this.create(Integer.valueOf(1));
-    final JOTreeNodeType<Integer> n0 =
+    final var n0 =
       this.createWithDetachCheck(Integer.valueOf(0), () -> false);
 
     n0.setParent(n1);
 
-    this.expected.expect(JOTreeExceptionDetachDenied.class);
-    n0.setParent(n2);
+    assertThrows(JOTreeExceptionDetachDenied.class, () -> {
+      n0.setParent(n2);
+    });
   }
 
   @Test
   public final void testDeniedChildRemove()
   {
-    final JOTreeNodeType<Integer> n1 = this.create(Integer.valueOf(1));
-    final JOTreeNodeType<Integer> n0 =
+    final var n1 = this.create(Integer.valueOf(1));
+    final var n0 =
       this.createWithDetachCheck(Integer.valueOf(0), () -> false);
 
     n0.setParent(n1);
 
-    this.expected.expect(JOTreeExceptionDetachDenied.class);
-    n1.childRemove(n0);
+    assertThrows(JOTreeExceptionDetachDenied.class, () -> {
+      n1.childRemove(n0);
+    });
   }
 
   @Test
   public final void testIsRoot()
   {
-    final JOTreeNodeType<Integer> n0 = this.create(Integer.valueOf(0));
-    final JOTreeNodeType<Integer> n1 = this.create(Integer.valueOf(1));
-    Assert.assertTrue(n0.isRoot());
-    Assert.assertTrue(n1.isRoot());
+    final var n0 = this.create(Integer.valueOf(0));
+    final var n1 = this.create(Integer.valueOf(1));
+    assertTrue(n0.isRoot());
+    assertTrue(n1.isRoot());
 
-    Assert.assertEquals(n0, n0.setParent(n1));
-    Assert.assertFalse(n0.isRoot());
-    Assert.assertTrue(n1.isRoot());
+    assertEquals(n0, n0.setParent(n1));
+    assertFalse(n0.isRoot());
+    assertTrue(n1.isRoot());
 
-    Assert.assertEquals(n0, n0.detach());
-    Assert.assertTrue(n0.isRoot());
-    Assert.assertTrue(n1.isRoot());
+    assertEquals(n0, n0.detach());
+    assertTrue(n0.isRoot());
+    assertTrue(n1.isRoot());
   }
 
   @Test
   public final void testIsDescendantOfSelf()
   {
-    final JOTreeNodeType<Integer> n0 = this.create(Integer.valueOf(0));
-    Assert.assertTrue(n0.isDescendantOf(n0));
+    final var n0 = this.create(Integer.valueOf(0));
+    assertTrue(n0.isDescendantOf(n0));
   }
 
   @Test
   public final void testIsDescendantOfUnrelated()
   {
-    final JOTreeNodeType<Integer> n0 = this.create(Integer.valueOf(0));
-    final JOTreeNodeType<Integer> n1 = this.create(Integer.valueOf(1));
-    Assert.assertFalse(n0.isDescendantOf(n1));
-    Assert.assertFalse(n1.isDescendantOf(n0));
+    final var n0 = this.create(Integer.valueOf(0));
+    final var n1 = this.create(Integer.valueOf(1));
+    assertFalse(n0.isDescendantOf(n1));
+    assertFalse(n1.isDescendantOf(n0));
   }
 
   @Test
   public final void testIsDescendantOfUnrelatedMore()
   {
-    final JOTreeNodeType<Integer> n0 = this.create(Integer.valueOf(0));
-    final JOTreeNodeType<Integer> n1 = this.create(Integer.valueOf(1));
-    final JOTreeNodeType<Integer> n2 = this.create(Integer.valueOf(2));
+    final var n0 = this.create(Integer.valueOf(0));
+    final var n1 = this.create(Integer.valueOf(1));
+    final var n2 = this.create(Integer.valueOf(2));
 
     n2.setParent(n1);
 
-    Assert.assertTrue(n0.isDescendantOf(n0));
-    Assert.assertFalse(n0.isDescendantOf(n1));
-    Assert.assertFalse(n0.isDescendantOf(n2));
+    assertTrue(n0.isDescendantOf(n0));
+    assertFalse(n0.isDescendantOf(n1));
+    assertFalse(n0.isDescendantOf(n2));
 
-    Assert.assertFalse(n1.isDescendantOf(n0));
-    Assert.assertTrue(n1.isDescendantOf(n1));
-    Assert.assertFalse(n1.isDescendantOf(n2));
+    assertFalse(n1.isDescendantOf(n0));
+    assertTrue(n1.isDescendantOf(n1));
+    assertFalse(n1.isDescendantOf(n2));
 
-    Assert.assertTrue(n2.isDescendantOf(n2));
-    Assert.assertFalse(n2.isDescendantOf(n0));
-    Assert.assertTrue(n2.isDescendantOf(n1));
+    assertTrue(n2.isDescendantOf(n2));
+    assertFalse(n2.isDescendantOf(n0));
+    assertTrue(n2.isDescendantOf(n1));
   }
 
   @Test
   public final void testChildAddCorrect()
   {
-    final JOTreeNodeType<Integer> n0 = this.create(Integer.valueOf(0));
-    final JOTreeNodeType<Integer> n1 = this.create(Integer.valueOf(1));
-    final JOTreeNodeType<Integer> n2 = this.create(Integer.valueOf(2));
-    final JOTreeNodeType<Integer> n3 = this.create(Integer.valueOf(3));
+    final var n0 = this.create(Integer.valueOf(0));
+    final var n1 = this.create(Integer.valueOf(1));
+    final var n2 = this.create(Integer.valueOf(2));
+    final var n3 = this.create(Integer.valueOf(3));
 
-    Assert.assertEquals(Integer.valueOf(0), n0.value());
-    Assert.assertEquals(Integer.valueOf(1), n1.value());
-    Assert.assertEquals(Integer.valueOf(2), n2.value());
-    Assert.assertEquals(Integer.valueOf(3), n3.value());
+    assertEquals(Integer.valueOf(0), n0.value());
+    assertEquals(Integer.valueOf(1), n1.value());
+    assertEquals(Integer.valueOf(2), n2.value());
+    assertEquals(Integer.valueOf(3), n3.value());
 
-    Assert.assertFalse(n0.parentReadable().isPresent());
-    Assert.assertFalse(n1.parentReadable().isPresent());
-    Assert.assertFalse(n2.parentReadable().isPresent());
-    Assert.assertFalse(n3.parentReadable().isPresent());
+    assertFalse(n0.parentReadable().isPresent());
+    assertFalse(n1.parentReadable().isPresent());
+    assertFalse(n2.parentReadable().isPresent());
+    assertFalse(n3.parentReadable().isPresent());
 
-    Assert.assertFalse(n0.parent().isPresent());
-    Assert.assertFalse(n1.parent().isPresent());
-    Assert.assertFalse(n2.parent().isPresent());
-    Assert.assertFalse(n3.parent().isPresent());
+    assertFalse(n0.parent().isPresent());
+    assertFalse(n1.parent().isPresent());
+    assertFalse(n2.parent().isPresent());
+    assertFalse(n3.parent().isPresent());
 
-    Assert.assertEquals(n0, n0.childAdd(n1));
-    Assert.assertEquals(n0, n0.childAdd(n2));
-    Assert.assertEquals(n0, n0.childAdd(n3));
+    assertEquals(n0, n0.childAdd(n1));
+    assertEquals(n0, n0.childAdd(n2));
+    assertEquals(n0, n0.childAdd(n3));
 
-    Assert.assertEquals(Optional.of(n0), n1.parentReadable());
-    Assert.assertEquals(Optional.of(n0), n2.parentReadable());
-    Assert.assertEquals(Optional.of(n0), n3.parentReadable());
+    assertEquals(Optional.of(n0), n1.parentReadable());
+    assertEquals(Optional.of(n0), n2.parentReadable());
+    assertEquals(Optional.of(n0), n3.parentReadable());
 
-    Assert.assertEquals(Optional.of(n0), n1.parent());
-    Assert.assertEquals(Optional.of(n0), n2.parent());
-    Assert.assertEquals(Optional.of(n0), n3.parent());
+    assertEquals(Optional.of(n0), n1.parent());
+    assertEquals(Optional.of(n0), n2.parent());
+    assertEquals(Optional.of(n0), n3.parent());
 
     final Collection<JOTreeNodeType<Integer>> n0_children = n0.children();
     final Collection<JOTreeNodeReadableType<Integer>> n0_children_ro = n0.childrenReadable();
 
-    Assert.assertEquals(3L, (long) n0_children.size());
-    Assert.assertTrue(n0_children.contains(n1));
-    Assert.assertTrue(n0_children.contains(n2));
-    Assert.assertTrue(n0_children.contains(n3));
+    assertEquals(3L, n0_children.size());
+    assertTrue(n0_children.contains(n1));
+    assertTrue(n0_children.contains(n2));
+    assertTrue(n0_children.contains(n3));
 
-    Assert.assertEquals(3L, (long) n0_children_ro.size());
-    Assert.assertTrue(n0_children_ro.contains(n1));
-    Assert.assertTrue(n0_children_ro.contains(n2));
-    Assert.assertTrue(n0_children_ro.contains(n3));
+    assertEquals(3L, n0_children_ro.size());
+    assertTrue(n0_children_ro.contains(n1));
+    assertTrue(n0_children_ro.contains(n2));
+    assertTrue(n0_children_ro.contains(n3));
 
-    Assert.assertEquals(n0, n0.childRemove(n3));
+    assertEquals(n0, n0.childRemove(n3));
 
-    Assert.assertEquals(2L, (long) n0_children.size());
-    Assert.assertTrue(n0_children.contains(n1));
-    Assert.assertTrue(n0_children.contains(n2));
-    Assert.assertFalse(n0_children.contains(n3));
+    assertEquals(2L, n0_children.size());
+    assertTrue(n0_children.contains(n1));
+    assertTrue(n0_children.contains(n2));
+    assertFalse(n0_children.contains(n3));
 
-    Assert.assertEquals(2L, (long) n0_children_ro.size());
-    Assert.assertTrue(n0_children_ro.contains(n1));
-    Assert.assertTrue(n0_children_ro.contains(n2));
-    Assert.assertFalse(n0_children_ro.contains(n3));
+    assertEquals(2L, n0_children_ro.size());
+    assertTrue(n0_children_ro.contains(n1));
+    assertTrue(n0_children_ro.contains(n2));
+    assertFalse(n0_children_ro.contains(n3));
 
-    Assert.assertEquals(n0, n0.childRemove(n2));
+    assertEquals(n0, n0.childRemove(n2));
 
-    Assert.assertEquals(1L, (long) n0_children.size());
-    Assert.assertTrue(n0_children.contains(n1));
-    Assert.assertFalse(n0_children.contains(n2));
-    Assert.assertFalse(n0_children.contains(n3));
+    assertEquals(1L, n0_children.size());
+    assertTrue(n0_children.contains(n1));
+    assertFalse(n0_children.contains(n2));
+    assertFalse(n0_children.contains(n3));
 
-    Assert.assertEquals(1L, (long) n0_children_ro.size());
-    Assert.assertTrue(n0_children_ro.contains(n1));
-    Assert.assertFalse(n0_children_ro.contains(n2));
-    Assert.assertFalse(n0_children_ro.contains(n3));
+    assertEquals(1L, n0_children_ro.size());
+    assertTrue(n0_children_ro.contains(n1));
+    assertFalse(n0_children_ro.contains(n2));
+    assertFalse(n0_children_ro.contains(n3));
 
-    Assert.assertEquals(n0, n0.childRemove(n1));
+    assertEquals(n0, n0.childRemove(n1));
 
-    Assert.assertEquals(0L, (long) n0_children.size());
-    Assert.assertFalse(n0_children.contains(n1));
-    Assert.assertFalse(n0_children.contains(n2));
-    Assert.assertFalse(n0_children.contains(n3));
+    assertEquals(0L, n0_children.size());
+    assertFalse(n0_children.contains(n1));
+    assertFalse(n0_children.contains(n2));
+    assertFalse(n0_children.contains(n3));
 
-    Assert.assertEquals(0L, (long) n0_children_ro.size());
-    Assert.assertFalse(n0_children_ro.contains(n1));
-    Assert.assertFalse(n0_children_ro.contains(n2));
-    Assert.assertFalse(n0_children_ro.contains(n3));
+    assertEquals(0L, n0_children_ro.size());
+    assertFalse(n0_children_ro.contains(n1));
+    assertFalse(n0_children_ro.contains(n2));
+    assertFalse(n0_children_ro.contains(n3));
   }
 
   @Test
   public final void testSetParentCorrect()
   {
-    final JOTreeNodeType<Integer> n0 = this.create(Integer.valueOf(0));
-    final JOTreeNodeType<Integer> n1 = this.create(Integer.valueOf(1));
-    final JOTreeNodeType<Integer> n2 = this.create(Integer.valueOf(2));
-    final JOTreeNodeType<Integer> n3 = this.create(Integer.valueOf(3));
+    final var n0 = this.create(Integer.valueOf(0));
+    final var n1 = this.create(Integer.valueOf(1));
+    final var n2 = this.create(Integer.valueOf(2));
+    final var n3 = this.create(Integer.valueOf(3));
 
-    Assert.assertEquals(Integer.valueOf(0), n0.value());
-    Assert.assertEquals(Integer.valueOf(1), n1.value());
-    Assert.assertEquals(Integer.valueOf(2), n2.value());
-    Assert.assertEquals(Integer.valueOf(3), n3.value());
+    assertEquals(Integer.valueOf(0), n0.value());
+    assertEquals(Integer.valueOf(1), n1.value());
+    assertEquals(Integer.valueOf(2), n2.value());
+    assertEquals(Integer.valueOf(3), n3.value());
 
-    Assert.assertFalse(n0.parentReadable().isPresent());
-    Assert.assertFalse(n1.parentReadable().isPresent());
-    Assert.assertFalse(n2.parentReadable().isPresent());
-    Assert.assertFalse(n3.parentReadable().isPresent());
+    assertFalse(n0.parentReadable().isPresent());
+    assertFalse(n1.parentReadable().isPresent());
+    assertFalse(n2.parentReadable().isPresent());
+    assertFalse(n3.parentReadable().isPresent());
 
-    Assert.assertFalse(n0.parent().isPresent());
-    Assert.assertFalse(n1.parent().isPresent());
-    Assert.assertFalse(n2.parent().isPresent());
-    Assert.assertFalse(n3.parent().isPresent());
+    assertFalse(n0.parent().isPresent());
+    assertFalse(n1.parent().isPresent());
+    assertFalse(n2.parent().isPresent());
+    assertFalse(n3.parent().isPresent());
 
-    Assert.assertEquals(n1, n1.setParent(n0));
-    Assert.assertEquals(n2, n2.setParent(n0));
-    Assert.assertEquals(n3, n3.setParent(n0));
+    assertEquals(n1, n1.setParent(n0));
+    assertEquals(n2, n2.setParent(n0));
+    assertEquals(n3, n3.setParent(n0));
 
-    Assert.assertEquals(Optional.of(n0), n1.parentReadable());
-    Assert.assertEquals(Optional.of(n0), n2.parentReadable());
-    Assert.assertEquals(Optional.of(n0), n3.parentReadable());
+    assertEquals(Optional.of(n0), n1.parentReadable());
+    assertEquals(Optional.of(n0), n2.parentReadable());
+    assertEquals(Optional.of(n0), n3.parentReadable());
 
-    Assert.assertEquals(Optional.of(n0), n1.parent());
-    Assert.assertEquals(Optional.of(n0), n2.parent());
-    Assert.assertEquals(Optional.of(n0), n3.parent());
+    assertEquals(Optional.of(n0), n1.parent());
+    assertEquals(Optional.of(n0), n2.parent());
+    assertEquals(Optional.of(n0), n3.parent());
 
     final Collection<JOTreeNodeType<Integer>> n0_children = n0.children();
     final Collection<JOTreeNodeReadableType<Integer>> n0_children_ro = n0.childrenReadable();
 
-    Assert.assertEquals(3L, (long) n0_children.size());
-    Assert.assertTrue(n0_children.contains(n1));
-    Assert.assertTrue(n0_children.contains(n2));
-    Assert.assertTrue(n0_children.contains(n3));
+    assertEquals(3L, n0_children.size());
+    assertTrue(n0_children.contains(n1));
+    assertTrue(n0_children.contains(n2));
+    assertTrue(n0_children.contains(n3));
 
-    Assert.assertEquals(3L, (long) n0_children_ro.size());
-    Assert.assertTrue(n0_children_ro.contains(n1));
-    Assert.assertTrue(n0_children_ro.contains(n2));
-    Assert.assertTrue(n0_children_ro.contains(n3));
+    assertEquals(3L, n0_children_ro.size());
+    assertTrue(n0_children_ro.contains(n1));
+    assertTrue(n0_children_ro.contains(n2));
+    assertTrue(n0_children_ro.contains(n3));
 
     n3.detach();
 
-    Assert.assertEquals(2L, (long) n0_children.size());
-    Assert.assertTrue(n0_children.contains(n1));
-    Assert.assertTrue(n0_children.contains(n2));
-    Assert.assertFalse(n0_children.contains(n3));
+    assertEquals(2L, n0_children.size());
+    assertTrue(n0_children.contains(n1));
+    assertTrue(n0_children.contains(n2));
+    assertFalse(n0_children.contains(n3));
 
-    Assert.assertEquals(2L, (long) n0_children_ro.size());
-    Assert.assertTrue(n0_children_ro.contains(n1));
-    Assert.assertTrue(n0_children_ro.contains(n2));
-    Assert.assertFalse(n0_children_ro.contains(n3));
+    assertEquals(2L, n0_children_ro.size());
+    assertTrue(n0_children_ro.contains(n1));
+    assertTrue(n0_children_ro.contains(n2));
+    assertFalse(n0_children_ro.contains(n3));
 
     n2.detach();
 
-    Assert.assertEquals(1L, (long) n0_children.size());
-    Assert.assertTrue(n0_children.contains(n1));
-    Assert.assertFalse(n0_children.contains(n2));
-    Assert.assertFalse(n0_children.contains(n3));
+    assertEquals(1L, n0_children.size());
+    assertTrue(n0_children.contains(n1));
+    assertFalse(n0_children.contains(n2));
+    assertFalse(n0_children.contains(n3));
 
-    Assert.assertEquals(1L, (long) n0_children_ro.size());
-    Assert.assertTrue(n0_children_ro.contains(n1));
-    Assert.assertFalse(n0_children_ro.contains(n2));
-    Assert.assertFalse(n0_children_ro.contains(n3));
+    assertEquals(1L, n0_children_ro.size());
+    assertTrue(n0_children_ro.contains(n1));
+    assertFalse(n0_children_ro.contains(n2));
+    assertFalse(n0_children_ro.contains(n3));
 
     n1.detach();
 
-    Assert.assertEquals(0L, (long) n0_children.size());
-    Assert.assertFalse(n0_children.contains(n1));
-    Assert.assertFalse(n0_children.contains(n2));
-    Assert.assertFalse(n0_children.contains(n3));
+    assertEquals(0L, n0_children.size());
+    assertFalse(n0_children.contains(n1));
+    assertFalse(n0_children.contains(n2));
+    assertFalse(n0_children.contains(n3));
 
-    Assert.assertEquals(0L, (long) n0_children_ro.size());
-    Assert.assertFalse(n0_children_ro.contains(n1));
-    Assert.assertFalse(n0_children_ro.contains(n2));
-    Assert.assertFalse(n0_children_ro.contains(n3));
+    assertEquals(0L, n0_children_ro.size());
+    assertFalse(n0_children_ro.contains(n1));
+    assertFalse(n0_children_ro.contains(n2));
+    assertFalse(n0_children_ro.contains(n3));
   }
 
   @Test
   public final void testSetParentTransfer()
   {
-    final JOTreeNodeType<Integer> n0 = this.create(Integer.valueOf(0));
-    final JOTreeNodeType<Integer> n1 = this.create(Integer.valueOf(1));
-    final JOTreeNodeType<Integer> n2 = this.create(Integer.valueOf(2));
+    final var n0 = this.create(Integer.valueOf(0));
+    final var n1 = this.create(Integer.valueOf(1));
+    final var n2 = this.create(Integer.valueOf(2));
 
-    Assert.assertEquals(n1, n1.setParent(n0));
+    assertEquals(n1, n1.setParent(n0));
 
-    Assert.assertFalse(n2.children().contains(n1));
-    Assert.assertTrue(n0.children().contains(n1));
-    Assert.assertEquals(n0, n1.parent().get());
+    assertFalse(n2.children().contains(n1));
+    assertTrue(n0.children().contains(n1));
+    assertEquals(n0, n1.parent().get());
 
-    Assert.assertEquals(n1, n1.setParent(n2));
+    assertEquals(n1, n1.setParent(n2));
 
-    Assert.assertTrue(n2.children().contains(n1));
-    Assert.assertFalse(n0.children().contains(n1));
-    Assert.assertEquals(n2, n1.parent().get());
+    assertTrue(n2.children().contains(n1));
+    assertFalse(n0.children().contains(n1));
+    assertEquals(n2, n1.parent().get());
   }
 
   @Test
   public final void testSetParentCyclic0()
   {
-    final JOTreeNodeType<Integer> n0 = this.create(Integer.valueOf(0));
-    final JOTreeNodeType<Integer> n1 = this.create(Integer.valueOf(1));
+    final var n0 = this.create(Integer.valueOf(0));
+    final var n1 = this.create(Integer.valueOf(1));
 
     n0.setParent(n1);
-    this.expected.expect(JOTreeExceptionCycle.class);
-    n1.setParent(n0);
+
+    assertThrows(JOTreeExceptionCycle.class, () -> {
+      n1.setParent(n0);
+    });
   }
 
   @Test
   public final void testSetParentCyclic1()
   {
-    final JOTreeNodeType<Integer> n0 = this.create(Integer.valueOf(0));
-    final JOTreeNodeType<Integer> n1 = this.create(Integer.valueOf(1));
-    final JOTreeNodeType<Integer> n2 = this.create(Integer.valueOf(2));
+    final var n0 = this.create(Integer.valueOf(0));
+    final var n1 = this.create(Integer.valueOf(1));
+    final var n2 = this.create(Integer.valueOf(2));
 
     n0.setParent(n1);
     n1.setParent(n2);
-    this.expected.expect(JOTreeExceptionCycle.class);
+    assertThrows(JOTreeExceptionCycle.class, () -> {
+      n2.setParent(n0);
+    });
+  }
+
+  @Test
+  public final void testSortChildren()
+  {
+    final var n0 = this.create(Integer.valueOf(0));
+    final var n1 = this.create(Integer.valueOf(1));
+    final var n2 = this.create(Integer.valueOf(2));
+    final var n3 = this.create(Integer.valueOf(3));
+
+    n1.setParent(n0);
     n2.setParent(n0);
+    n3.setParent(n0);
+
+    n0.childrenSort(Comparator.naturalOrder());
+
+    {
+      final var nodes = n0.children();
+      assertEquals(Integer.valueOf(1), nodes.get(0).value());
+      assertEquals(Integer.valueOf(2), nodes.get(1).value());
+      assertEquals(Integer.valueOf(3), nodes.get(2).value());
+    }
+
+    n0.childrenSort(Comparator.reverseOrder());
+
+    {
+      final var nodes = n0.children();
+      assertEquals(Integer.valueOf(3), nodes.get(0).value());
+      assertEquals(Integer.valueOf(2), nodes.get(1).value());
+      assertEquals(Integer.valueOf(1), nodes.get(2).value());
+    }
   }
 
   /**
@@ -486,28 +522,28 @@ public abstract class JOTreeNodeContract
   @Test
   public final void testSetParentExceptionSafe()
   {
-    final JOTreeNodeType<Integer> n0 = this.create(Integer.valueOf(0));
-    final JOTreeNodeType<Integer> n1 = this.create(Integer.valueOf(1));
+    final var n0 = this.create(Integer.valueOf(0));
+    final var n1 = this.create(Integer.valueOf(1));
 
-    final ChildAddTimebomb<Integer> n_timebomb =
-      new ChildAddTimebomb<>(this.create(Integer.valueOf(2)));
+    final var n_timebomb =
+      new ChildAddTimebomb<Integer>(this.create(Integer.valueOf(2)));
 
     n1.setParent(n0);
-    Assert.assertTrue(n0.children().contains(n1));
-    Assert.assertEquals(n0, n1.parent().get());
+    assertTrue(n0.children().contains(n1));
+    assertEquals(n0, n1.parent().get());
 
-    boolean caught = false;
+    var caught = false;
 
     try {
       n1.setParent(n_timebomb);
     } catch (final HostileImplementationException e) {
-      Assert.assertEquals("Refusing to add", e.getMessage());
+      assertEquals("Refusing to add", e.getMessage());
       caught = true;
     }
 
-    Assert.assertTrue(caught);
-    Assert.assertFalse(n0.children().contains(n1));
-    Assert.assertFalse(n1.parent().isPresent());
+    assertTrue(caught);
+    assertFalse(n0.children().contains(n1));
+    assertFalse(n1.parent().isPresent());
   }
 
   /**
@@ -519,9 +555,9 @@ public abstract class JOTreeNodeContract
   @Test
   public final void testSetParentExceptionSafeNoPrevious()
   {
-    final JOTreeNodeType<Integer> n1 = this.create(Integer.valueOf(1));
+    final var n1 = this.create(Integer.valueOf(1));
 
-    boolean caught = false;
+    var caught = false;
 
     try {
       n1.setParent(new JOTreeNodeUnimplemented<Integer>()
@@ -542,12 +578,12 @@ public abstract class JOTreeNodeContract
         }
       });
     } catch (final HostileImplementationException e) {
-      Assert.assertEquals("Refusing to add", e.getMessage());
+      assertEquals("Refusing to add", e.getMessage());
       caught = true;
     }
 
-    Assert.assertTrue(caught);
-    Assert.assertFalse(n1.parent().isPresent());
+    assertTrue(caught);
+    assertFalse(n1.parent().isPresent());
   }
 
   /**
@@ -558,27 +594,27 @@ public abstract class JOTreeNodeContract
   @Test
   public final void testDetachExceptionSafeNoPrevious()
   {
-    final JOTreeNodeType<Integer> n1 = this.create(Integer.valueOf(1));
-    final ChildRemoveTimebomb<Integer> n_timebomb =
-      new ChildRemoveTimebomb<>(this.create(Integer.valueOf(0)));
+    final var n1 = this.create(Integer.valueOf(1));
+    final var n_timebomb =
+      new ChildRemoveTimebomb<Integer>(this.create(Integer.valueOf(0)));
 
     n1.setParent(n_timebomb);
 
-    Assert.assertEquals(n_timebomb, n1.parent().get());
-    Assert.assertTrue(n_timebomb.children().contains(n1));
+    assertEquals(n_timebomb, n1.parent().get());
+    assertTrue(n_timebomb.children().contains(n1));
 
-    boolean caught = false;
+    var caught = false;
 
     try {
       n1.detach();
     } catch (final HostileImplementationException e) {
-      Assert.assertEquals("Refusing to remove", e.getMessage());
+      assertEquals("Refusing to remove", e.getMessage());
       caught = true;
     }
 
-    Assert.assertTrue(caught);
-    Assert.assertEquals(n_timebomb, n1.parent().get());
-    Assert.assertTrue(n_timebomb.children().contains(n1));
+    assertTrue(caught);
+    assertEquals(n_timebomb, n1.parent().get());
+    assertTrue(n_timebomb.children().contains(n1));
   }
 
   /**
@@ -589,22 +625,22 @@ public abstract class JOTreeNodeContract
   @Test
   public final void testChildSetParentExceptionSafeNoPrevious()
   {
-    final JOTreeNodeType<Integer> n1 = this.create(Integer.valueOf(1));
-    final ChildSetParentTimebomb<Integer> n_timebomb =
-      new ChildSetParentTimebomb<>(this.create(Integer.valueOf(0)));
+    final var n1 = this.create(Integer.valueOf(1));
+    final var n_timebomb =
+      new ChildSetParentTimebomb<Integer>(this.create(Integer.valueOf(0)));
 
-    boolean caught = false;
+    var caught = false;
 
     try {
       n1.childAdd(n_timebomb);
     } catch (final HostileImplementationException e) {
-      Assert.assertEquals("Refusing to set parent", e.getMessage());
+      assertEquals("Refusing to set parent", e.getMessage());
       caught = true;
     }
 
-    Assert.assertTrue(caught);
-    Assert.assertFalse(n_timebomb.parent().isPresent());
-    Assert.assertFalse(n1.children().contains(n_timebomb));
+    assertTrue(caught);
+    assertFalse(n_timebomb.parent().isPresent());
+    assertFalse(n1.children().contains(n_timebomb));
   }
 
   /**
@@ -615,27 +651,27 @@ public abstract class JOTreeNodeContract
   @Test
   public final void testChildRemoveExceptionSafe()
   {
-    final JOTreeNodeType<Integer> n1 = this.create(Integer.valueOf(1));
-    final DetachTimebomb<Integer> n_timebomb =
-      new DetachTimebomb<>(this.create(Integer.valueOf(0)));
+    final var n1 = this.create(Integer.valueOf(1));
+    final var n_timebomb =
+      new DetachTimebomb<Integer>(this.create(Integer.valueOf(0)));
 
     n1.childAdd(n_timebomb);
 
-    Assert.assertEquals(n1, n_timebomb.parent().get());
-    Assert.assertTrue(n1.children().contains(n_timebomb));
+    assertEquals(n1, n_timebomb.parent().get());
+    assertTrue(n1.children().contains(n_timebomb));
 
-    boolean caught = false;
+    var caught = false;
 
     try {
       n1.childRemove(n_timebomb);
     } catch (final HostileImplementationException e) {
-      Assert.assertEquals("Refusing to detach", e.getMessage());
+      assertEquals("Refusing to detach", e.getMessage());
       caught = true;
     }
 
-    Assert.assertTrue(caught);
-    Assert.assertEquals(n1, n_timebomb.parent().get());
-    Assert.assertTrue(n1.children().contains(n_timebomb));
+    assertTrue(caught);
+    assertEquals(n1, n_timebomb.parent().get());
+    assertTrue(n1.children().contains(n_timebomb));
   }
 
   @Test
@@ -644,14 +680,14 @@ public abstract class JOTreeNodeContract
     final Map<String, JOTreeNodeReadableType<String>> nodes_s = new HashMap<>();
     final Map<Integer, JOTreeNodeReadableType<Integer>> nodes_i = new HashMap<>();
 
-    final JOTreeNodeType<Integer> n0 = this.create(Integer.valueOf(0));
-    final JOTreeNodeType<Integer> n1 = this.create(Integer.valueOf(1));
-    final JOTreeNodeType<Integer> n2 = this.create(Integer.valueOf(2));
-    final JOTreeNodeType<Integer> n3 = this.create(Integer.valueOf(3));
-    final JOTreeNodeType<Integer> n4 = this.create(Integer.valueOf(4));
-    final JOTreeNodeType<Integer> n5 = this.create(Integer.valueOf(5));
-    final JOTreeNodeType<Integer> n6 = this.create(Integer.valueOf(6));
-    final JOTreeNodeType<Integer> n7 = this.create(Integer.valueOf(7));
+    final var n0 = this.create(Integer.valueOf(0));
+    final var n1 = this.create(Integer.valueOf(1));
+    final var n2 = this.create(Integer.valueOf(2));
+    final var n3 = this.create(Integer.valueOf(3));
+    final var n4 = this.create(Integer.valueOf(4));
+    final var n5 = this.create(Integer.valueOf(5));
+    final var n6 = this.create(Integer.valueOf(6));
+    final var n7 = this.create(Integer.valueOf(7));
 
     n7.setParent(n5);
     n6.setParent(n5);
@@ -665,10 +701,10 @@ public abstract class JOTreeNodeContract
     n1.setParent(n0);
 
     final List<Integer> order = new ArrayList<>(10);
-    final JOTreeNodeType<String> r =
+    final var r =
       n0.mapBreadthFirst(order, (input, depth, node) -> {
-        Assert.assertTrue(depth >= 0);
-        Assert.assertTrue(depth <= 3);
+        assertTrue(depth >= 0);
+        assertTrue(depth <= 3);
         input.add(node.value());
         nodes_i.put(node.value(), node);
         return node.value().toString();
@@ -678,47 +714,47 @@ public abstract class JOTreeNodeContract
     dump(r);
 
     r.forEachDepthFirst(Integer.valueOf(0), (input, depth, node) -> {
-      Assert.assertFalse(nodes_s.containsKey(node.value()));
+      assertFalse(nodes_s.containsKey(node.value()));
       nodes_s.put(node.value(), node);
     });
 
-    Assert.assertEquals(8L, (long) nodes_s.size());
+    assertEquals(8L, nodes_s.size());
 
-    for (final Integer key : nodes_i.keySet()) {
-      Assert.assertTrue(nodes_s.containsKey(key.toString()));
+    for (final var key : nodes_i.keySet()) {
+      assertTrue(nodes_s.containsKey(key.toString()));
 
-      final JOTreeNodeReadableType<Integer> node_i =
+      final var node_i =
         nodes_i.get(key);
-      final JOTreeNodeReadableType<String> node_s =
+      final var node_s =
         nodes_s.get(key.toString());
       final Collection<JOTreeNodeReadableType<Integer>> children_i =
         node_i.childrenReadable();
       final Collection<JOTreeNodeReadableType<String>> children_s =
         node_s.childrenReadable();
 
-      Assert.assertEquals(
-        (long) children_i.size(),
+      assertEquals(
+        children_i.size(),
         (long) children_s.size());
 
-      for (final JOTreeNodeReadableType<Integer> ci : children_i) {
-        final JOTreeNodeReadableType<String> cs = nodes_s.get(ci.value().toString());
+      for (final var ci : children_i) {
+        final var cs = nodes_s.get(ci.value().toString());
         if (cs.parentReadable().isPresent()) {
-          final JOTreeNodeReadableType<String> csp = cs.parentReadable().get();
-          final JOTreeNodeReadableType<Integer> cip = ci.parentReadable().get();
-          Assert.assertEquals(csp.value(), cip.value().toString());
+          final var csp = cs.parentReadable().get();
+          final var cip = ci.parentReadable().get();
+          assertEquals(csp.value(), cip.value().toString());
         }
       }
     }
 
-    Assert.assertEquals(8L, (long) order.size());
-    Assert.assertEquals(Integer.valueOf(0), order.get(0));
-    Assert.assertEquals(Integer.valueOf(1), order.get(1));
-    Assert.assertEquals(Integer.valueOf(5), order.get(2));
-    Assert.assertEquals(Integer.valueOf(2), order.get(3));
-    Assert.assertEquals(Integer.valueOf(7), order.get(4));
-    Assert.assertEquals(Integer.valueOf(6), order.get(5));
-    Assert.assertEquals(Integer.valueOf(4), order.get(6));
-    Assert.assertEquals(Integer.valueOf(3), order.get(7));
+    assertEquals(8L, order.size());
+    assertEquals(Integer.valueOf(0), order.get(0));
+    assertEquals(Integer.valueOf(1), order.get(1));
+    assertEquals(Integer.valueOf(5), order.get(2));
+    assertEquals(Integer.valueOf(2), order.get(3));
+    assertEquals(Integer.valueOf(7), order.get(4));
+    assertEquals(Integer.valueOf(6), order.get(5));
+    assertEquals(Integer.valueOf(4), order.get(6));
+    assertEquals(Integer.valueOf(3), order.get(7));
   }
 
   @Test
@@ -727,14 +763,14 @@ public abstract class JOTreeNodeContract
     final Map<String, JOTreeNodeReadableType<String>> nodes_s = new HashMap<>();
     final Map<Integer, JOTreeNodeReadableType<Integer>> nodes_i = new HashMap<>();
 
-    final JOTreeNodeType<Integer> n0 = this.create(Integer.valueOf(0));
-    final JOTreeNodeType<Integer> n1 = this.create(Integer.valueOf(1));
-    final JOTreeNodeType<Integer> n2 = this.create(Integer.valueOf(2));
-    final JOTreeNodeType<Integer> n3 = this.create(Integer.valueOf(3));
-    final JOTreeNodeType<Integer> n4 = this.create(Integer.valueOf(4));
-    final JOTreeNodeType<Integer> n5 = this.create(Integer.valueOf(5));
-    final JOTreeNodeType<Integer> n6 = this.create(Integer.valueOf(6));
-    final JOTreeNodeType<Integer> n7 = this.create(Integer.valueOf(7));
+    final var n0 = this.create(Integer.valueOf(0));
+    final var n1 = this.create(Integer.valueOf(1));
+    final var n2 = this.create(Integer.valueOf(2));
+    final var n3 = this.create(Integer.valueOf(3));
+    final var n4 = this.create(Integer.valueOf(4));
+    final var n5 = this.create(Integer.valueOf(5));
+    final var n6 = this.create(Integer.valueOf(6));
+    final var n7 = this.create(Integer.valueOf(7));
 
     n7.setParent(n5);
     n6.setParent(n5);
@@ -748,10 +784,10 @@ public abstract class JOTreeNodeContract
     n1.setParent(n0);
 
     final List<Integer> order = new ArrayList<>(10);
-    final JOTreeNodeType<String> r =
+    final var r =
       n0.mapDepthFirst(order, (input, depth, node) -> {
-        Assert.assertTrue(depth >= 0);
-        Assert.assertTrue(depth <= 3);
+        assertTrue(depth >= 0);
+        assertTrue(depth <= 3);
         input.add(node.value());
         nodes_i.put(node.value(), node);
         return node.value().toString();
@@ -761,47 +797,47 @@ public abstract class JOTreeNodeContract
     dump(r);
 
     r.forEachDepthFirst(Integer.valueOf(0), (input, depth, node) -> {
-      Assert.assertFalse(nodes_s.containsKey(node.value()));
+      assertFalse(nodes_s.containsKey(node.value()));
       nodes_s.put(node.value(), node);
     });
 
-    Assert.assertEquals(8L, (long) nodes_s.size());
+    assertEquals(8L, nodes_s.size());
 
-    for (final Integer key : nodes_i.keySet()) {
-      Assert.assertTrue(nodes_s.containsKey(key.toString()));
+    for (final var key : nodes_i.keySet()) {
+      assertTrue(nodes_s.containsKey(key.toString()));
 
-      final JOTreeNodeReadableType<Integer> node_i =
+      final var node_i =
         nodes_i.get(key);
-      final JOTreeNodeReadableType<String> node_s =
+      final var node_s =
         nodes_s.get(key.toString());
       final Collection<JOTreeNodeReadableType<Integer>> children_i =
         node_i.childrenReadable();
       final Collection<JOTreeNodeReadableType<String>> children_s =
         node_s.childrenReadable();
 
-      Assert.assertEquals(
-        (long) children_i.size(),
+      assertEquals(
+        children_i.size(),
         (long) children_s.size());
 
-      for (final JOTreeNodeReadableType<Integer> ci : children_i) {
-        final JOTreeNodeReadableType<String> cs = nodes_s.get(ci.value().toString());
+      for (final var ci : children_i) {
+        final var cs = nodes_s.get(ci.value().toString());
         if (cs.parentReadable().isPresent()) {
-          final JOTreeNodeReadableType<String> csp = cs.parentReadable().get();
-          final JOTreeNodeReadableType<Integer> cip = ci.parentReadable().get();
-          Assert.assertEquals(csp.value(), cip.value().toString());
+          final var csp = cs.parentReadable().get();
+          final var cip = ci.parentReadable().get();
+          assertEquals(csp.value(), cip.value().toString());
         }
       }
     }
 
-    Assert.assertEquals(8L, (long) order.size());
-    Assert.assertEquals(Integer.valueOf(0), order.get(0));
-    Assert.assertEquals(Integer.valueOf(1), order.get(1));
-    Assert.assertEquals(Integer.valueOf(2), order.get(2));
-    Assert.assertEquals(Integer.valueOf(3), order.get(3));
-    Assert.assertEquals(Integer.valueOf(4), order.get(4));
-    Assert.assertEquals(Integer.valueOf(5), order.get(5));
-    Assert.assertEquals(Integer.valueOf(6), order.get(6));
-    Assert.assertEquals(Integer.valueOf(7), order.get(7));
+    assertEquals(8L, order.size());
+    assertEquals(Integer.valueOf(0), order.get(0));
+    assertEquals(Integer.valueOf(1), order.get(1));
+    assertEquals(Integer.valueOf(2), order.get(2));
+    assertEquals(Integer.valueOf(3), order.get(3));
+    assertEquals(Integer.valueOf(4), order.get(4));
+    assertEquals(Integer.valueOf(5), order.get(5));
+    assertEquals(Integer.valueOf(6), order.get(6));
+    assertEquals(Integer.valueOf(7), order.get(7));
   }
 
   static class JOTreeNodeUnimplemented<A> implements JOTreeNodeType<A>
@@ -819,7 +855,7 @@ public abstract class JOTreeNodeContract
     }
 
     @Override
-    public Collection<JOTreeNodeType<A>> children()
+    public List<JOTreeNodeType<A>> children()
     {
       throw new UnimplementedCodeException();
     }
@@ -854,6 +890,13 @@ public abstract class JOTreeNodeContract
     }
 
     @Override
+    public void childrenSortNodes(
+      final Comparator<JOTreeNodeType<A>> comparator)
+    {
+      throw new UnimplementedCodeException();
+    }
+
+    @Override
     public A value()
     {
       throw new UnimplementedCodeException();
@@ -866,7 +909,7 @@ public abstract class JOTreeNodeContract
     }
 
     @Override
-    public Collection<JOTreeNodeReadableType<A>> childrenReadable()
+    public List<JOTreeNodeReadableType<A>> childrenReadable()
     {
       throw new UnimplementedCodeException();
     }

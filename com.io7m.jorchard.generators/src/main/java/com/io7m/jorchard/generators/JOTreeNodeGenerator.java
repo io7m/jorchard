@@ -16,6 +16,7 @@
 
 package com.io7m.jorchard.generators;
 
+import java.security.SecureRandom;
 import java.util.Objects;
 import com.io7m.jorchard.core.JOTreeNode;
 import com.io7m.jorchard.core.JOTreeNodeType;
@@ -34,6 +35,7 @@ public final class JOTreeNodeGenerator<T> implements Generator<JOTreeNodeType<T>
   private final Generator<T> gen;
   private final Generator<Integer> size_gen;
   private final double branch_chance;
+  private final SecureRandom random;
 
   /**
    * Create a new generator.
@@ -64,6 +66,7 @@ public final class JOTreeNodeGenerator<T> implements Generator<JOTreeNodeType<T>
     this.size_gen = Objects.requireNonNull(in_size_gen, "Size generator");
     this.gen = Objects.requireNonNull(in_gen, "Generator");
     this.branch_chance = in_branch_chance;
+    this.random = new SecureRandom();
   }
 
   @Override
@@ -84,7 +87,7 @@ public final class JOTreeNodeGenerator<T> implements Generator<JOTreeNodeType<T>
       final JOTreeNodeType<T> child = JOTreeNode.create(this.gen.next());
       node.childAdd(child);
       count.decrementAndGet();
-      if (Math.random() < this.branch_chance) {
+      if (this.random.nextDouble() < this.branch_chance) {
         this.addNodes(child, count);
       }
     }
