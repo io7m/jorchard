@@ -2,7 +2,7 @@ jorchard
 ===
 
 [![Maven Central](https://img.shields.io/maven-central/v/com.io7m.jorchard/com.io7m.jorchard.svg?style=flat-square)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.io7m.jorchard%22)
-[![Maven Central (snapshot)](https://img.shields.io/nexus/s/https/oss.sonatype.org/com.io7m.jorchard/com.io7m.jorchard.svg?style=flat-square)](https://oss.sonatype.org/content/repositories/snapshots/com/io7m/jorchard/)
+[![Maven Central (snapshot)](https://img.shields.io/nexus/s/https/s01.oss.sonatype.org/com.io7m.jorchard/com.io7m.jorchard.svg?style=flat-square)](https://s01.oss.sonatype.org/content/repositories/snapshots/com/io7m/jorchard/)
 [![Codecov](https://img.shields.io/codecov/c/github/io7m/jorchard.svg?style=flat-square)](https://codecov.io/gh/io7m/jorchard)
 
 ![jorchard](./src/site/resources/jorchard.jpg?raw=true)
